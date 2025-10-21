@@ -1,20 +1,12 @@
-import { Text, View, StyleSheet } from 'react-native';
-import { multiply } from 'react-native-backgrounds';
-
-const result = multiply(3, 7);
+// App.tsx
+import CircularGradient from './CircularGradient';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
-    </View>
+    <>
+      <CircularGradient centerColor={0x4f46e5} edgeColor="rgb(30, 27, 75)" />
+      <CircularGradient centerColor="green" edgeColor="white" />
+      <CircularGradient centerColor="rgb(255, 0, 0)" edgeColor="rgb(0, 0, 0)" />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
