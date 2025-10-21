@@ -35,11 +35,9 @@ export default function CircularGradient({
   const { context, canvasRef, device, presentationFormat, isLoading } =
     useWGPUSetup();
 
-  // Get screen dimensions for aspect ratio calculation
   const screenData = Dimensions.get('window');
   const aspectRatio = screenData.width / screenData.height;
 
-  // Always create shared values to avoid conditional hook usage
   const animatedSize = typeof size === 'number' ? useSharedValue(size) : size;
   const animatedSizeX =
     sizeX !== undefined
@@ -58,7 +56,6 @@ export default function CircularGradient({
   const animatedCenterY =
     typeof centerY === 'number' ? useSharedValue(centerY) : centerY;
 
-  // State to hold current values for the shader
   const [currentSize, setCurrentSize] = useState(
     typeof size === 'number' ? size : size.value
   );
@@ -87,7 +84,6 @@ export default function CircularGradient({
     typeof centerY === 'number' ? centerY : centerY.value
   );
 
-  // Listen to animated value changes and update state
   useAnimatedReaction(
     () => animatedSize.value,
     (value: number) => {
@@ -128,13 +124,11 @@ export default function CircularGradient({
       return;
     }
 
-    // Create uniform buffer for gradient parameters
     const uniformBuffer = device.createBuffer({
       size: 24, // 6 floats: centerX, centerY, sizeX, sizeY, aspectRatio, padding
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
-    // Update uniform buffer with current values
     const uniformData = new Float32Array([
       currentCenterX,
       currentCenterY,
@@ -165,9 +159,7 @@ export default function CircularGradient({
         let uv = (ndc * 0.6) + vec2<f32>(0.5, 0.5);
         let center = vec2<f32>(gradientParams.centerX, gradientParams.centerY);
         
-        // Calculate elliptical distance with aspect ratio correction
         let diff = uv - center;
-        // Apply aspect ratio correction: stretch X to match screen proportions
         let correctedDiff = vec2<f32>(diff.x * gradientParams.aspectRatio, diff.y);
         let normalizedDiff = vec2<f32>(correctedDiff.x / gradientParams.sizeX, correctedDiff.y / gradientParams.sizeY);
         let dist = length(normalizedDiff);
@@ -202,7 +194,6 @@ export default function CircularGradient({
       },
     });
 
-    // Create bind group for uniform buffer
     const bindGroup = device.createBindGroup({
       layout: pipeline.getBindGroupLayout(0),
       entries: [

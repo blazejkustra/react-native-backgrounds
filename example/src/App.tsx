@@ -23,12 +23,10 @@ import CircularGradient from './CircularGradient';
 const { height } = Dimensions.get('window');
 
 export default function App() {
-  // Create animated shared value for Y position
-  const centerY = useSharedValue(1.1); // Start at bottom
+  const centerY = useSharedValue(1.1);
   const [isAtTop, setIsAtTop] = useState(false);
 
   const handlePress = () => {
-    // Toggle between bottom and top
     const targetY = centerY.value > 0.5 ? -0.1 : 1.1;
     setIsAtTop(!isAtTop);
     centerY.value = withTiming(targetY, { duration: 1000 });
@@ -62,7 +60,6 @@ export default function App() {
     };
   });
 
-  // Animated styles for the button
   const buttonBottomAnimatedStyle = useAnimatedStyle(() => {
     const translateY = interpolate(
       centerY.value,
@@ -84,7 +81,6 @@ export default function App() {
         translucent
       />
 
-      {/* Background Gradient */}
       <CircularGradient
         centerColor={`#4f46e5`}
         edgeColor="black"
@@ -94,15 +90,12 @@ export default function App() {
         centerY={centerY}
       />
 
-      {/* Content Overlay */}
       <View style={styles.content}>
-        {/* Title - Starts at top, moves to center when gradient animates */}
         <Animated.View style={[styles.titleContainer, textAnimatedStyle]}>
           <Text style={styles.title}>Gradient Magic</Text>
           <Text style={styles.subtitle}>Tap to animate the gradient</Text>
         </Animated.View>
 
-        {/* Bottom Button */}
         <Animated.View
           style={[styles.bottomButtonContainer, buttonBottomAnimatedStyle]}
         >
