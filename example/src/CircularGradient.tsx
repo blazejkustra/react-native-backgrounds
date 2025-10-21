@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 import { StyleSheet } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
 import { colorToVec3Literal, type ColorInput } from './utils/colors';
@@ -8,9 +9,18 @@ import { useEffect } from 'react';
 type Props = {
   centerColor: ColorInput;
   edgeColor: ColorInput;
+  size?: number;
+  centerX?: number;
+  centerY?: number;
 };
 
-export default function CircularGradient({ centerColor, edgeColor }: Props) {
+export default function CircularGradient({
+  centerColor,
+  edgeColor,
+  size = 0.7,
+  centerX = 0.5,
+  centerY = 0.5,
+}: Props) {
   const { context, canvasRef, device, presentationFormat, isLoading } =
     useWGPUSetup();
 
@@ -19,16 +29,35 @@ export default function CircularGradient({ centerColor, edgeColor }: Props) {
       return;
     }
 
+    // Create uniform buffer for gradient parameters
+    const uniformBuffer = device.createBuffer({
+      size: 16, // 4 floats: centerX, centerY, size, padding
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
+
+    // Update uniform buffer with current values
+    const uniformData = new Float32Array([centerX, centerY, size, 0.0]); // padding for alignment
+    device.queue.writeBuffer(uniformBuffer, 0, uniformData);
+
     const FRAGMENT = /* wgsl */ `
       const CENTER_COLOR : vec3<f32> = ${colorToVec3Literal(centerColor)};
       const EDGE_COLOR   : vec3<f32> = ${colorToVec3Literal(edgeColor)};
 
+      struct GradientParams {
+        centerX: f32,
+        centerY: f32,
+        size: f32,
+        _padding: f32,
+      }
+
+      @group(0) @binding(0) var<uniform> gradientParams: GradientParams;
+
       @fragment
       fn main(@location(0) ndc: vec2<f32>) -> @location(0) vec4<f32> {
         let uv = (ndc * 0.6) + vec2<f32>(0.5, 0.5);
-        let center = vec2<f32>(0.5, 0.5);
+        let center = vec2<f32>(gradientParams.centerX, gradientParams.centerY);
         let dist = distance(uv, center);
-        let t = smoothstep(0.0, 0.7, dist);
+        let t = smoothstep(0.0, gradientParams.size, dist);
         let color = mix(CENTER_COLOR, EDGE_COLOR, t);
         return vec4<f32>(color, 1.0);
       }
@@ -58,6 +87,19 @@ export default function CircularGradient({ centerColor, edgeColor }: Props) {
       },
     });
 
+    // Create bind group for uniform buffer
+    const bindGroup = device.createBindGroup({
+      layout: pipeline.getBindGroupLayout(0),
+      entries: [
+        {
+          binding: 0,
+          resource: {
+            buffer: uniformBuffer,
+          },
+        },
+      ],
+    });
+
     const commandEncoder = device.createCommandEncoder();
 
     const textureView = context.getCurrentTexture().createView();
@@ -74,12 +116,23 @@ export default function CircularGradient({ centerColor, edgeColor }: Props) {
 
     const passEncoder = commandEncoder.beginRenderPass(renderPassDescriptor);
     passEncoder.setPipeline(pipeline);
+    passEncoder.setBindGroup(0, bindGroup);
     passEncoder.draw(3);
     passEncoder.end();
 
     device.queue.submit([commandEncoder.finish()]);
     context.present();
-  }, [device, context, presentationFormat, centerColor, edgeColor, isLoading]);
+  }, [
+    device,
+    context,
+    presentationFormat,
+    centerColor,
+    edgeColor,
+    size,
+    centerX,
+    centerY,
+    isLoading,
+  ]);
 
   return <Canvas ref={canvasRef} style={styles.webgpu} />;
 }
