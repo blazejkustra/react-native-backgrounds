@@ -4,7 +4,7 @@
     "paths": {
       "react-native-backgrounds": ["./src/index"]
     },
-    "types": ["@webgpu/types"],
+    "types": ["@webgpu/types", "@types/node"],
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "customConditions": ["react-native-strict-api"],
