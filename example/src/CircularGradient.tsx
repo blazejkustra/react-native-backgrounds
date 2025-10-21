@@ -1,28 +1,127 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-bitwise */
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
 import { colorToVec3Literal, type ColorInput } from './utils/colors';
 import { fullScreenTriangleVertexShader } from './shaders/fullScreenTriangleVertexShader';
 import { useWGPUSetup } from './hooks/useWGPUSetup';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  useSharedValue,
+  useAnimatedReaction,
+  runOnJS,
+} from 'react-native-reanimated';
+import type { SharedValue } from 'react-native-reanimated';
 
 type Props = {
   centerColor: ColorInput;
   edgeColor: ColorInput;
-  size?: number;
-  centerX?: number;
-  centerY?: number;
+  size?: number | SharedValue<number>;
+  sizeX?: number | SharedValue<number>;
+  sizeY?: number | SharedValue<number>;
+  centerX?: number | SharedValue<number>;
+  centerY?: number | SharedValue<number>;
 };
 
 export default function CircularGradient({
   centerColor,
   edgeColor,
   size = 0.7,
+  sizeX,
+  sizeY,
   centerX = 0.5,
   centerY = 0.5,
 }: Props) {
   const { context, canvasRef, device, presentationFormat, isLoading } =
     useWGPUSetup();
+
+  // Get screen dimensions for aspect ratio calculation
+  const screenData = Dimensions.get('window');
+  const aspectRatio = screenData.width / screenData.height;
+
+  // Always create shared values to avoid conditional hook usage
+  const animatedSize = typeof size === 'number' ? useSharedValue(size) : size;
+  const animatedSizeX =
+    sizeX !== undefined
+      ? typeof sizeX === 'number'
+        ? useSharedValue(sizeX)
+        : sizeX
+      : animatedSize;
+  const animatedSizeY =
+    sizeY !== undefined
+      ? typeof sizeY === 'number'
+        ? useSharedValue(sizeY)
+        : sizeY
+      : animatedSize;
+  const animatedCenterX =
+    typeof centerX === 'number' ? useSharedValue(centerX) : centerX;
+  const animatedCenterY =
+    typeof centerY === 'number' ? useSharedValue(centerY) : centerY;
+
+  // State to hold current values for the shader
+  const [currentSize, setCurrentSize] = useState(
+    typeof size === 'number' ? size : size.value
+  );
+  const [currentSizeX, setCurrentSizeX] = useState(
+    sizeX !== undefined
+      ? typeof sizeX === 'number'
+        ? sizeX
+        : sizeX.value
+      : typeof size === 'number'
+        ? size
+        : size.value
+  );
+  const [currentSizeY, setCurrentSizeY] = useState(
+    sizeY !== undefined
+      ? typeof sizeY === 'number'
+        ? sizeY
+        : sizeY.value
+      : typeof size === 'number'
+        ? size
+        : size.value
+  );
+  const [currentCenterX, setCurrentCenterX] = useState(
+    typeof centerX === 'number' ? centerX : centerX.value
+  );
+  const [currentCenterY, setCurrentCenterY] = useState(
+    typeof centerY === 'number' ? centerY : centerY.value
+  );
+
+  // Listen to animated value changes and update state
+  useAnimatedReaction(
+    () => animatedSize.value,
+    (value: number) => {
+      runOnJS(setCurrentSize)(value);
+    }
+  );
+
+  useAnimatedReaction(
+    () => animatedSizeX.value,
+    (value: number) => {
+      runOnJS(setCurrentSizeX)(value);
+    }
+  );
+
+  useAnimatedReaction(
+    () => animatedSizeY.value,
+    (value: number) => {
+      runOnJS(setCurrentSizeY)(value);
+    }
+  );
+
+  useAnimatedReaction(
+    () => animatedCenterX.value,
+    (value: number) => {
+      runOnJS(setCurrentCenterX)(value);
+    }
+  );
+
+  useAnimatedReaction(
+    () => animatedCenterY.value,
+    (value: number) => {
+      runOnJS(setCurrentCenterY)(value);
+    }
+  );
 
   useEffect(() => {
     if (isLoading) {
@@ -31,12 +130,19 @@ export default function CircularGradient({
 
     // Create uniform buffer for gradient parameters
     const uniformBuffer = device.createBuffer({
-      size: 16, // 4 floats: centerX, centerY, size, padding
+      size: 24, // 6 floats: centerX, centerY, sizeX, sizeY, aspectRatio, padding
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
     // Update uniform buffer with current values
-    const uniformData = new Float32Array([centerX, centerY, size, 0.0]); // padding for alignment
+    const uniformData = new Float32Array([
+      currentCenterX,
+      currentCenterY,
+      currentSizeX,
+      currentSizeY,
+      aspectRatio,
+      0.0, // padding for alignment
+    ]);
     device.queue.writeBuffer(uniformBuffer, 0, uniformData);
 
     const FRAGMENT = /* wgsl */ `
@@ -46,7 +152,9 @@ export default function CircularGradient({
       struct GradientParams {
         centerX: f32,
         centerY: f32,
-        size: f32,
+        sizeX: f32,
+        sizeY: f32,
+        aspectRatio: f32,
         _padding: f32,
       }
 
@@ -56,8 +164,15 @@ export default function CircularGradient({
       fn main(@location(0) ndc: vec2<f32>) -> @location(0) vec4<f32> {
         let uv = (ndc * 0.6) + vec2<f32>(0.5, 0.5);
         let center = vec2<f32>(gradientParams.centerX, gradientParams.centerY);
-        let dist = distance(uv, center);
-        let t = smoothstep(0.0, gradientParams.size, dist);
+        
+        // Calculate elliptical distance with aspect ratio correction
+        let diff = uv - center;
+        // Apply aspect ratio correction: stretch X to match screen proportions
+        let correctedDiff = vec2<f32>(diff.x * gradientParams.aspectRatio, diff.y);
+        let normalizedDiff = vec2<f32>(correctedDiff.x / gradientParams.sizeX, correctedDiff.y / gradientParams.sizeY);
+        let dist = length(normalizedDiff);
+        
+        let t = smoothstep(0.0, 1.0, dist);
         let color = mix(CENTER_COLOR, EDGE_COLOR, t);
         return vec4<f32>(color, 1.0);
       }
@@ -128,9 +243,12 @@ export default function CircularGradient({
     presentationFormat,
     centerColor,
     edgeColor,
-    size,
-    centerX,
-    centerY,
+    currentSize,
+    currentSizeX,
+    currentSizeY,
+    currentCenterX,
+    currentCenterY,
+    aspectRatio,
     isLoading,
   ]);
 

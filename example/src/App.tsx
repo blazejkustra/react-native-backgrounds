@@ -1,29 +1,28 @@
 // App.tsx
+import { useSharedValue, withTiming } from 'react-native-reanimated';
+import { Pressable } from 'react-native';
 import CircularGradient from './CircularGradient';
 
 export default function App() {
+  // Create animated shared value for Y position
+  const centerY = useSharedValue(1.1); // Start at bottom (0.8 = 80% down)
+
+  const handlePress = () => {
+    // Toggle between bottom (0.8) and top (0.2)
+    const targetY = centerY.value > 0.5 ? -0.1 : 1.1;
+    centerY.value = withTiming(targetY, { duration: 1000 });
+  };
+
   return (
-    <>
-      {/* Default gradient - centered, medium size */}
-      <CircularGradient centerColor={0x4f46e5} edgeColor="rgb(30, 27, 75)" />
-
-      {/* Small gradient in top-left corner */}
+    <Pressable style={{ flex: 1 }} onPress={handlePress}>
       <CircularGradient
-        centerColor="green"
-        edgeColor="white"
-        size={0.3}
-        centerX={0.2}
-        centerY={0.2}
+        centerColor={`#4f46e5`}
+        edgeColor="black"
+        sizeX={0.5}
+        sizeY={0.5}
+        centerX={0.5}
+        centerY={centerY}
       />
-
-      {/* Large gradient in bottom-right corner */}
-      <CircularGradient
-        centerColor="rgb(255, 0, 0)"
-        edgeColor="rgb(0, 0, 0)"
-        size={0.9}
-        centerX={0.8}
-        centerY={0.8}
-      />
-    </>
+    </Pressable>
   );
 }
