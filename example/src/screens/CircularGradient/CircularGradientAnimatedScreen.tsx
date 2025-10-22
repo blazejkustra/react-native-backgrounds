@@ -67,8 +67,8 @@ export default function CircularGradientAnimatedScreen() {
   const centerY = useSharedValue(1.1);
 
   const handleAnimate = () => {
-    const targetY = centerY.value > 0.5 ? -0.2 : 1.1;
-    centerY.value = withTiming(targetY, { duration: 1000 });
+    const targetY = centerY.get() > 0.5 ? -0.2 : 1.1;
+    centerY.set(withTiming(targetY, { duration: 1000 }));
   };
 
   const textAnimatedStyle = useAnimatedStyle(() => {
