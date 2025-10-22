@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-bitwise */
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
 import { colorToVec3Literal, type ColorInput } from './utils/colors';
 import { fullScreenTriangleVertexShader } from './shaders/fullScreenTriangleVertexShader';
@@ -34,9 +34,6 @@ export default function CircularGradient({
 }: Props) {
   const { context, canvasRef, device, presentationFormat, isLoading } =
     useWGPUSetup();
-
-  const screenData = Dimensions.get('window');
-  const aspectRatio = screenData.width / screenData.height;
 
   const animatedSize = typeof size === 'number' ? useSharedValue(size) : size;
   const animatedSizeX =
@@ -125,7 +122,7 @@ export default function CircularGradient({
     }
 
     const uniformBuffer = device.createBuffer({
-      size: 24, // 6 floats: centerX, centerY, sizeX, sizeY, aspectRatio, padding
+      size: 20, // 5 floats: centerX, centerY, sizeX, sizeY, padding
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
@@ -134,7 +131,6 @@ export default function CircularGradient({
       currentCenterY,
       currentSizeX,
       currentSizeY,
-      aspectRatio,
       0.0, // padding for alignment
     ]);
     device.queue.writeBuffer(uniformBuffer, 0, uniformData);
@@ -148,7 +144,6 @@ export default function CircularGradient({
         centerY: f32,
         sizeX: f32,
         sizeY: f32,
-        aspectRatio: f32,
         _padding: f32,
       }
 
@@ -160,8 +155,7 @@ export default function CircularGradient({
         let center = vec2<f32>(gradientParams.centerX, gradientParams.centerY);
         
         let diff = uv - center;
-        let correctedDiff = vec2<f32>(diff.x * gradientParams.aspectRatio, diff.y);
-        let normalizedDiff = vec2<f32>(correctedDiff.x / gradientParams.sizeX, correctedDiff.y / gradientParams.sizeY);
+        let normalizedDiff = vec2<f32>(diff.x / gradientParams.sizeX, diff.y / gradientParams.sizeY);
         let dist = length(normalizedDiff);
         
         let t = smoothstep(0.0, 1.0, dist);
@@ -239,7 +233,6 @@ export default function CircularGradient({
     currentSizeY,
     currentCenterX,
     currentCenterY,
-    aspectRatio,
     isLoading,
   ]);
 

@@ -27,7 +27,7 @@ export default function App() {
   const [isAtTop, setIsAtTop] = useState(false);
 
   const handlePress = () => {
-    const targetY = centerY.value > 0.5 ? -0.1 : 1.1;
+    const targetY = centerY.value > 0.5 ? -0.2 : 1.1;
     setIsAtTop(!isAtTop);
     centerY.value = withTiming(targetY, { duration: 1000 });
   };
@@ -84,7 +84,7 @@ export default function App() {
       <CircularGradient
         centerColor={`#4f46e5`}
         edgeColor="black"
-        sizeX={0.5}
+        sizeX={1}
         sizeY={0.5}
         centerX={0.5}
         centerY={centerY}
