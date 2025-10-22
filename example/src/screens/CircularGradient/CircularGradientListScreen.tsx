@@ -7,9 +7,20 @@ import {
   StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import type { GradientExample, HomeScreenNavigationProp } from '../types';
+import type { GradientExample } from './types';
+import type { HomeScreenNavigationProp } from '../../types';
 
 const CIRCULAR_GRADIENT_EXAMPLES: GradientExample[] = [
+  {
+    id: 'static',
+    title: 'Static Gradient',
+    description: 'Beautiful static gradient showcase with different styles',
+    screen: 'CircularGradientStatic',
+    preview: {
+      centerColor: '#f97316',
+      edgeColor: '#7c2d12',
+    },
+  },
   {
     id: 'animated',
     title: 'Animated Gradient',
@@ -22,13 +33,13 @@ const CIRCULAR_GRADIENT_EXAMPLES: GradientExample[] = [
     },
   },
   {
-    id: 'static',
-    title: 'Static Gradient',
-    description: 'Beautiful static gradient showcase with different styles',
-    screen: 'CircularGradientStatic',
+    id: 'multi-layer',
+    title: 'Multi-Layer Gradient',
+    description: 'Complex layered gradients creating stunning visual depth',
+    screen: 'CircularGradientMultiLayer',
     preview: {
-      centerColor: '#f97316',
-      edgeColor: '#7c2d12',
+      centerColor: '#a855f7',
+      edgeColor: '#06b6d4',
     },
   },
 ];

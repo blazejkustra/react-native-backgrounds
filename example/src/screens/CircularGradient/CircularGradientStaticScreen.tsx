@@ -5,13 +5,9 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useSharedValue } from 'react-native-reanimated';
-import CircularGradient from '../CircularGradient';
-
-const { width } = Dimensions.get('window');
+import { CircularGradient } from 'react-native-backgrounds';
 
 type GradientStyle = {
   id: string;

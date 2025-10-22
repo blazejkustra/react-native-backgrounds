@@ -5,6 +5,7 @@ export type RootStackParamList = {
   CircularGradientList: undefined;
   CircularGradientAnimated: undefined;
   CircularGradientStatic: undefined;
+  CircularGradientMultiLayer: undefined;
 };
 
 export type HomeScreenNavigationProp =
@@ -16,15 +17,4 @@ export type ExampleCategory = {
   description: string;
   screen: keyof RootStackParamList;
   color: string;
-};
-
-export type GradientExample = {
-  id: string;
-  title: string;
-  description: string;
-  screen: keyof RootStackParamList;
-  preview: {
-    centerColor: string;
-    edgeColor: string;
-  };
 };

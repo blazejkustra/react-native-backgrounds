@@ -1,3 +1,3 @@
-export function multiply(a: number, b: number): number {
-  return a * b;
-}
+import CircularGradient from './components/CircularGradient';
+
+export { CircularGradient };

@@ -16,7 +16,7 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from 'react-native-reanimated';
-import CircularGradient from '../CircularGradient';
+import { CircularGradient } from 'react-native-backgrounds';
 
 type ColorScheme = {
   id: string;

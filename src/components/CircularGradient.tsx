@@ -2,9 +2,9 @@
 /* eslint-disable no-bitwise */
 import { StyleSheet } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
-import { colorToVec3Literal, type ColorInput } from './utils/colors';
-import { fullScreenTriangleVertexShader } from './shaders/fullScreenTriangleVertexShader';
-import { useWGPUSetup } from './hooks/useWGPUSetup';
+import { colorToVec3Literal, type ColorInput } from '../utils/colors';
+import { fullScreenTriangleVertexShader } from '../shaders/fullScreenTriangleVertexShader';
+import { useWGPUSetup } from '../hooks/useWGPUSetup';
 import { useEffect, useState } from 'react';
 import {
   useSharedValue,
