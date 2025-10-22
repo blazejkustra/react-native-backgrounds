@@ -17,11 +17,18 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated';
 import CircularGradient from '../CircularGradient';
-import type { CircularGradientExample } from '../types';
+
+type ColorScheme = {
+  id: string;
+  title: string;
+  description: string;
+  centerColor: string;
+  edgeColor: string;
+};
 
 const { height } = Dimensions.get('window');
 
-const CIRCULAR_GRADIENT_EXAMPLES: CircularGradientExample[] = [
+const COLOR_SCHEMES: ColorScheme[] = [
   {
     id: 'purple-black',
     title: 'Animated Purple',
@@ -52,10 +59,11 @@ const CIRCULAR_GRADIENT_EXAMPLES: CircularGradientExample[] = [
   },
 ];
 
-export default function CircularGradientExamplesScreen() {
+export default function CircularGradientAnimatedScreen() {
   const navigation = useNavigation();
-  const [selectedExample, setSelectedExample] =
-    useState<CircularGradientExample>(CIRCULAR_GRADIENT_EXAMPLES[0]!);
+  const [selectedScheme, setSelectedScheme] = useState<ColorScheme>(
+    COLOR_SCHEMES[0]!
+  );
   const centerY = useSharedValue(1.1);
 
   const handleAnimate = () => {
@@ -113,8 +121,8 @@ export default function CircularGradientExamplesScreen() {
       />
 
       <CircularGradient
-        centerColor={selectedExample.centerColor}
-        edgeColor={selectedExample.edgeColor}
+        centerColor={selectedScheme.centerColor}
+        edgeColor={selectedScheme.edgeColor}
         sizeX={1}
         sizeY={0.5}
         centerX={0.5}
@@ -130,8 +138,8 @@ export default function CircularGradientExamplesScreen() {
         </TouchableOpacity>
 
         <Animated.View style={[styles.titleContainer, textAnimatedStyle]}>
-          <Text style={styles.title}>{selectedExample.title}</Text>
-          <Text style={styles.subtitle}>{selectedExample.description}</Text>
+          <Text style={styles.title}>{selectedScheme.title}</Text>
+          <Text style={styles.subtitle}>{selectedScheme.description}</Text>
         </Animated.View>
 
         <View style={styles.examplesContainer}>
@@ -140,25 +148,25 @@ export default function CircularGradientExamplesScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.examplesScrollContent}
           >
-            {CIRCULAR_GRADIENT_EXAMPLES.map((example) => (
+            {COLOR_SCHEMES.map((scheme) => (
               <TouchableOpacity
-                key={example.id}
+                key={scheme.id}
                 style={[
                   styles.exampleCard,
-                  selectedExample.id === example.id && styles.exampleCardActive,
+                  selectedScheme.id === scheme.id && styles.exampleCardActive,
                 ]}
                 onPress={() => {
-                  setSelectedExample(example);
+                  setSelectedScheme(scheme);
                 }}
                 activeOpacity={0.7}
               >
                 <View
                   style={[
                     styles.colorPreview,
-                    { backgroundColor: example.centerColor },
+                    { backgroundColor: scheme.centerColor },
                   ]}
                 />
-                <Text style={styles.exampleTitle}>{example.title}</Text>
+                <Text style={styles.exampleTitle}>{scheme.title}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -211,51 +219,54 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-    paddingHorizontal: 32,
+    paddingHorizontal: 40,
+    paddingTop: 20,
   },
   title: {
-    fontSize: 42,
+    fontSize: 40,
     fontWeight: '700',
     color: '#ffffff',
     textAlign: 'center',
     marginBottom: 12,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
   },
   subtitle: {
-    fontSize: 18,
-    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 17,
+    color: 'rgba(255, 255, 255, 0.85)',
     textAlign: 'center',
     fontWeight: '400',
+    paddingHorizontal: 20,
   },
   examplesContainer: {
-    paddingVertical: 20,
+    paddingVertical: 24,
   },
   examplesScrollContent: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     gap: 12,
   },
   exampleCard: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     borderRadius: 16,
-    padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     alignItems: 'center',
     minWidth: 120,
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.15)',
   },
   exampleCardActive: {
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.6)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
   },
   colorPreview: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    marginBottom: 8,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    marginBottom: 10,
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
   exampleTitle: {
     color: '#ffffff',
@@ -265,23 +276,23 @@ const styles = StyleSheet.create({
   },
   bottomButtonContainer: {
     alignItems: 'center',
-    paddingBottom: 20,
-    paddingHorizontal: 32,
+    paddingBottom: 32,
+    paddingHorizontal: 20,
   },
   bottomButton: {
-    backgroundColor: 'rgba(79, 70, 229, 0.2)',
-    paddingHorizontal: 48,
-    paddingVertical: 20,
-    borderRadius: 35,
+    backgroundColor: 'rgba(79, 70, 229, 0.25)',
+    paddingHorizontal: 52,
+    paddingVertical: 18,
+    borderRadius: 32,
     borderWidth: 2,
-    borderColor: 'rgba(79, 70, 229, 0.4)',
+    borderColor: 'rgba(79, 70, 229, 0.5)',
     shadowColor: '#4f46e5',
     shadowOffset: {
       width: 0,
-      height: 12,
+      height: 8,
     },
     shadowOpacity: 0.4,
-    shadowRadius: 20,
+    shadowRadius: 16,
     elevation: 12,
     minWidth: 200,
   },

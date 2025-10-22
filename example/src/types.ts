@@ -2,7 +2,9 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
   Home: undefined;
-  CircularGradientExamples: undefined;
+  CircularGradientList: undefined;
+  CircularGradientAnimated: undefined;
+  CircularGradientStatic: undefined;
 };
 
 export type HomeScreenNavigationProp =
@@ -16,10 +18,13 @@ export type ExampleCategory = {
   color: string;
 };
 
-export type CircularGradientExample = {
+export type GradientExample = {
   id: string;
   title: string;
   description: string;
-  centerColor: string;
-  edgeColor: string;
+  screen: keyof RootStackParamList;
+  preview: {
+    centerColor: string;
+    edgeColor: string;
+  };
 };

@@ -2,7 +2,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
-import CircularGradientExamplesScreen from './screens/CircularGradientExamplesScreen';
+import CircularGradientListScreen from './screens/CircularGradientListScreen';
+import CircularGradientAnimatedScreen from './screens/CircularGradientAnimatedScreen';
+import CircularGradientStaticScreen from './screens/CircularGradientStaticScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -19,8 +21,16 @@ export default function App() {
       >
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen
-          name="CircularGradientExamples"
-          component={CircularGradientExamplesScreen}
+          name="CircularGradientList"
+          component={CircularGradientListScreen}
+        />
+        <Stack.Screen
+          name="CircularGradientAnimated"
+          component={CircularGradientAnimatedScreen}
+        />
+        <Stack.Screen
+          name="CircularGradientStatic"
+          component={CircularGradientStaticScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
