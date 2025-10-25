@@ -5,7 +5,7 @@ import HomeScreen from './screens/HomeScreen';
 import CircularGradientListScreen from './screens/CircularGradient/CircularGradientListScreen';
 import CircularGradientAnimatedScreen from './screens/CircularGradient/CircularGradientAnimatedScreen';
 import CircularGradientStaticScreen from './screens/CircularGradient/CircularGradientStaticScreen';
-import CircularGradientMultiLayerScreen from './screens/CircularGradient/CircularGradientMultiLayerScreen';
+import CircularGradientInteractiveScreen from './screens/CircularGradient/CircularGradientInteractiveScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -34,8 +34,8 @@ export default function App() {
           component={CircularGradientStaticScreen}
         />
         <Stack.Screen
-          name="CircularGradientMultiLayer"
-          component={CircularGradientMultiLayerScreen}
+          name="CircularGradientInteractive"
+          component={CircularGradientInteractiveScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

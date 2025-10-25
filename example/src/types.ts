@@ -5,7 +5,7 @@ export type RootStackParamList = {
   CircularGradientList: undefined;
   CircularGradientAnimated: undefined;
   CircularGradientStatic: undefined;
-  CircularGradientMultiLayer: undefined;
+  CircularGradientInteractive: undefined;
 };
 
 export type HomeScreenNavigationProp =

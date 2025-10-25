@@ -33,13 +33,14 @@ const CIRCULAR_GRADIENT_EXAMPLES: GradientExample[] = [
     },
   },
   {
-    id: 'multi-layer',
-    title: 'Multi-Layer Gradient',
-    description: 'Complex layered gradients creating stunning visual depth',
-    screen: 'CircularGradientMultiLayer',
+    id: 'interactive',
+    title: 'Interactive Playground',
+    description:
+      'Customize gradient colors, sizes, and positions with real-time sliders',
+    screen: 'CircularGradientInteractive',
     preview: {
       centerColor: '#a855f7',
-      edgeColor: '#06b6d4',
+      edgeColor: '#4c1d95',
     },
   },
 ];
