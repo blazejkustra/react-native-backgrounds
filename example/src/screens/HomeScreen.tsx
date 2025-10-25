@@ -14,8 +14,7 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
   {
     id: 'iridescence',
     title: 'Iridescence',
-    description:
-      'Mesmerizing iridescent animated backgrounds with flowing colors',
+    description: 'Mesmerizing iridescent animated backgrounds',
     screen: 'IridescenceStatic',
     color: '#8b5cf6',
     image: require('../../assets/components/iridescence.png'),
@@ -23,7 +22,7 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
   {
     id: 'liquid-chrome',
     title: 'Liquid Chrome',
-    description: 'Fluid metallic surfaces with smooth flowing animations',
+    description: 'Fluid metallic surfaces',
     screen: 'LiquidChromeStatic',
     color: '#64748b',
     image: require('../../assets/components/liquid-chrome.png'),
@@ -31,8 +30,7 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
   {
     id: 'circular-gradient',
     title: 'Circular Gradient',
-    description:
-      'Beautiful circular gradients with customizable colors and animations',
+    description: 'Customizable circular gradients',
     screen: 'CircularGradientList',
     color: '#4f46e5',
     image: require('../../assets/components/circular-gradient.png'),
@@ -40,7 +38,7 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
   {
     id: 'linear-gradient',
     title: 'Linear Gradient',
-    description: 'Smooth linear gradients with various directions',
+    description: 'Smooth linear gradients',
     screen: 'LinearGradientList',
     color: '#ec4899',
     image: require('../../assets/components/linear-gradient.png'),
