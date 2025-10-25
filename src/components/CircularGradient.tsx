@@ -1,16 +1,11 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-bitwise */
 import { StyleSheet } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
 import { colorToVec3Literal, type ColorInput } from '../utils/colors';
 import { fullScreenTriangleVertexShader } from '../shaders/fullScreenTriangleVertexShader';
 import { useWGPUSetup } from '../hooks/useWGPUSetup';
-import { useEffect, useState } from 'react';
-import {
-  useSharedValue,
-  useAnimatedReaction,
-  runOnJS,
-} from 'react-native-reanimated';
+import { useCallback, useEffect } from 'react';
+import { runOnUI, useDerivedValue } from 'react-native-reanimated';
 import type { SharedValue } from 'react-native-reanimated';
 
 type Props = {
@@ -26,98 +21,34 @@ type Props = {
 export default function CircularGradient({
   centerColor,
   edgeColor,
-  size = 0.7,
-  sizeX,
-  sizeY,
+  sizeX = 0.5,
+  sizeY = 0.5,
   centerX = 0.5,
   centerY = 0.5,
 }: Props) {
-  const { context, canvasRef, device, presentationFormat, isLoading } =
-    useWGPUSetup();
+  const { sharedContext, canvasRef } = useWGPUSetup();
 
-  const animatedSize = typeof size === 'number' ? useSharedValue(size) : size;
-  const animatedSizeX =
-    sizeX !== undefined
-      ? typeof sizeX === 'number'
-        ? useSharedValue(sizeX)
-        : sizeX
-      : animatedSize;
-  const animatedSizeY =
-    sizeY !== undefined
-      ? typeof sizeY === 'number'
-        ? useSharedValue(sizeY)
-        : sizeY
-      : animatedSize;
-  const animatedCenterX =
-    typeof centerX === 'number' ? useSharedValue(centerX) : centerX;
-  const animatedCenterY =
-    typeof centerY === 'number' ? useSharedValue(centerY) : centerY;
-
-  const [currentSize, setCurrentSize] = useState(
-    typeof size === 'number' ? size : size.value
+  const animatedSizeX = useDerivedValue(() =>
+    typeof sizeX === 'number' ? sizeX : sizeX.value
   );
-  const [currentSizeX, setCurrentSizeX] = useState(
-    sizeX !== undefined
-      ? typeof sizeX === 'number'
-        ? sizeX
-        : sizeX.value
-      : typeof size === 'number'
-        ? size
-        : size.value
+  const animatedSizeY = useDerivedValue(() =>
+    typeof sizeY === 'number' ? sizeY : sizeY.value
   );
-  const [currentSizeY, setCurrentSizeY] = useState(
-    sizeY !== undefined
-      ? typeof sizeY === 'number'
-        ? sizeY
-        : sizeY.value
-      : typeof size === 'number'
-        ? size
-        : size.value
-  );
-  const [currentCenterX, setCurrentCenterX] = useState(
+  const animatedCenterX = useDerivedValue(() =>
     typeof centerX === 'number' ? centerX : centerX.value
   );
-  const [currentCenterY, setCurrentCenterY] = useState(
+  const animatedCenterY = useDerivedValue(() =>
     typeof centerY === 'number' ? centerY : centerY.value
   );
 
-  useAnimatedReaction(
-    () => animatedSize.value,
-    (value: number) => {
-      runOnJS(setCurrentSize)(value);
-    }
-  );
+  const x = colorToVec3Literal(centerColor);
+  const y = colorToVec3Literal(edgeColor);
 
-  useAnimatedReaction(
-    () => animatedSizeX.value,
-    (value: number) => {
-      runOnJS(setCurrentSizeX)(value);
-    }
-  );
+  const drawCircularGradient = useCallback(() => {
+    'worklet';
 
-  useAnimatedReaction(
-    () => animatedSizeY.value,
-    (value: number) => {
-      runOnJS(setCurrentSizeY)(value);
-    }
-  );
-
-  useAnimatedReaction(
-    () => animatedCenterX.value,
-    (value: number) => {
-      runOnJS(setCurrentCenterX)(value);
-    }
-  );
-
-  useAnimatedReaction(
-    () => animatedCenterY.value,
-    (value: number) => {
-      runOnJS(setCurrentCenterY)(value);
-    }
-  );
-
-  useEffect(() => {
-    if (isLoading) {
+    const { device, context, presentationFormat } = sharedContext.value;
+    if (!device || !context || !presentationFormat) {
       return;
     }
 
@@ -127,17 +58,17 @@ export default function CircularGradient({
     });
 
     const uniformData = new Float32Array([
-      currentCenterX,
-      currentCenterY,
-      currentSizeX,
-      currentSizeY,
+      animatedCenterX.value,
+      animatedCenterY.value,
+      animatedSizeX.value,
+      animatedSizeY.value,
       0.0, // padding for alignment
     ]);
     device.queue.writeBuffer(uniformBuffer, 0, uniformData);
 
     const FRAGMENT = /* wgsl */ `
-      const CENTER_COLOR : vec3<f32> = ${colorToVec3Literal(centerColor)};
-      const EDGE_COLOR   : vec3<f32> = ${colorToVec3Literal(edgeColor)};
+      const CENTER_COLOR : vec3<f32> = ${x};
+      const EDGE_COLOR   : vec3<f32> = ${y};
 
       struct GradientParams {
         centerX: f32,
@@ -223,17 +154,52 @@ export default function CircularGradient({
     device.queue.submit([commandEncoder.finish()]);
     context.present();
   }, [
-    device,
-    context,
-    presentationFormat,
-    centerColor,
-    edgeColor,
-    currentSize,
-    currentSizeX,
-    currentSizeY,
-    currentCenterX,
-    currentCenterY,
-    isLoading,
+    animatedCenterX,
+    animatedCenterY,
+    animatedSizeX,
+    animatedSizeY,
+    sharedContext,
+    x,
+    y,
+  ]);
+
+  useEffect(() => {
+    // TODO: Remove this trick
+    setTimeout(() => {
+      runOnUI(drawCircularGradient)();
+    }, 0);
+
+    function listenToAnimatedValues() {
+      animatedCenterX.addListener(0, () => {
+        drawCircularGradient();
+      });
+      animatedCenterY.addListener(0, () => {
+        drawCircularGradient();
+      });
+      animatedSizeX.addListener(0, () => {
+        drawCircularGradient();
+      });
+      animatedSizeY.addListener(0, () => {
+        drawCircularGradient();
+      });
+    }
+
+    function stopListeningToAnimatedValues() {
+      animatedCenterX.removeListener(0);
+      animatedCenterY.removeListener(0);
+      animatedSizeX.removeListener(0);
+      animatedSizeY.removeListener(0);
+    }
+
+    runOnUI(listenToAnimatedValues)();
+    return () => runOnUI(stopListeningToAnimatedValues)();
+  }, [
+    animatedCenterX,
+    animatedCenterY,
+    animatedSizeX,
+    animatedSizeY,
+    drawCircularGradient,
+    sharedContext,
   ]);
 
   return <Canvas ref={canvasRef} style={styles.webgpu} />;
