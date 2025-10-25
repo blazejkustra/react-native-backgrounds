@@ -21,4 +21,5 @@ export type ExampleCategory = {
   description: string;
   screen: keyof RootStackParamList;
   color: string;
+  image: number;
 };

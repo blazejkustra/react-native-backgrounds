@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
+  Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { ExampleCategory, HomeScreenNavigationProp } from '../types';
@@ -17,6 +18,7 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
       'Beautiful circular gradients with customizable colors and animations',
     screen: 'CircularGradientList',
     color: '#4f46e5',
+    image: require('../../assets/components/circular-gradient.png'),
   },
   {
     id: 'linear-gradient',
@@ -24,6 +26,7 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     description: 'Smooth linear gradients with various directions',
     screen: 'LinearGradientList',
     color: '#ec4899',
+    image: require('../../assets/components/linear-gradient.png'),
   },
   {
     id: 'iridescence',
@@ -32,6 +35,7 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
       'Mesmerizing iridescent animated backgrounds with flowing colors',
     screen: 'IridescenceStatic',
     color: '#8b5cf6',
+    image: require('../../assets/components/iridescence.png'),
   },
 ];
 
@@ -59,12 +63,8 @@ export default function HomeScreen() {
             onPress={() => navigation.navigate(category.screen)}
             activeOpacity={0.7}
           >
-            <View
-              style={[
-                styles.cardColorIndicator,
-                { backgroundColor: category.color },
-              ]}
-            />
+            <Image source={category.image} style={styles.cardImage} />
+
             <View style={styles.cardContent}>
               <Text style={styles.cardTitle}>{category.title}</Text>
               <Text style={styles.cardDescription}>{category.description}</Text>
@@ -135,6 +135,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 12,
     elevation: 6,
+  },
+  cardImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+    marginRight: 16,
+    backgroundColor: '#000',
   },
   cardColorIndicator: {
     width: 5,

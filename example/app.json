@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "example",
-    "slug": "example",
+    "name": "Backgrounds Example",
+    "slug": "Backgrounds Example",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
