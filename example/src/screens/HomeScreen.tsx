@@ -52,6 +52,14 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     image: require('../../assets/components/calico-swirl.png'),
   },
   {
+    id: 'desert',
+    title: 'Desert',
+    description: 'Raymarched desert with sand dunes and mist',
+    screen: 'DesertStatic',
+    color: '#d4a574',
+    image: require('../../assets/components/desert.png'),
+  },
+  {
     id: 'circular-gradient',
     title: 'Circular Gradient',
     description: 'Customizable circular gradients',
@@ -107,12 +115,6 @@ export default function HomeScreen() {
           </TouchableOpacity>
         ))}
       </ScrollView>
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          Tap any example to see it in action
-        </Text>
-      </View>
     </View>
   );
 }
