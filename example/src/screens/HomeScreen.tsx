@@ -48,7 +48,7 @@ export default function HomeScreen() {
 
       <View style={styles.header}>
         <Text style={styles.title}>React Native Backgrounds</Text>
-        <Text style={styles.subtitle}>WebGPU-powered gradient examples</Text>
+        <Text style={styles.subtitle}>WebGPU-powered magic backgrounds</Text>
       </View>
 
       <ScrollView
