@@ -1,7 +1,10 @@
-import { initGPU } from './utils/initGPU';
+import { Platform } from 'react-native';
 
 // Need to initialize the GPU before using the library
-initGPU();
+if (Platform.OS !== 'web') {
+  const { initGPU } = require('./utils/initGPU');
+  initGPU();
+}
 
 import CircularGradient from './components/CircularGradient';
 import LinearGradient from './components/LinearGradient';
