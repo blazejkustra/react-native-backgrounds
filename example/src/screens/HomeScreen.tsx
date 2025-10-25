@@ -12,23 +12,6 @@ import type { ExampleCategory, HomeScreenNavigationProp } from '../types';
 
 const EXAMPLE_CATEGORIES: ExampleCategory[] = [
   {
-    id: 'circular-gradient',
-    title: 'Circular Gradient',
-    description:
-      'Beautiful circular gradients with customizable colors and animations',
-    screen: 'CircularGradientList',
-    color: '#4f46e5',
-    image: require('../../assets/components/circular-gradient.png'),
-  },
-  {
-    id: 'linear-gradient',
-    title: 'Linear Gradient',
-    description: 'Smooth linear gradients with various directions',
-    screen: 'LinearGradientList',
-    color: '#ec4899',
-    image: require('../../assets/components/linear-gradient.png'),
-  },
-  {
     id: 'iridescence',
     title: 'Iridescence',
     description:
@@ -44,6 +27,23 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     screen: 'LiquidChromeStatic',
     color: '#64748b',
     image: require('../../assets/components/liquid-chrome.png'),
+  },
+  {
+    id: 'circular-gradient',
+    title: 'Circular Gradient',
+    description:
+      'Beautiful circular gradients with customizable colors and animations',
+    screen: 'CircularGradientList',
+    color: '#4f46e5',
+    image: require('../../assets/components/circular-gradient.png'),
+  },
+  {
+    id: 'linear-gradient',
+    title: 'Linear Gradient',
+    description: 'Smooth linear gradients with various directions',
+    screen: 'LinearGradientList',
+    color: '#ec4899',
+    image: require('../../assets/components/linear-gradient.png'),
   },
 ];
 
