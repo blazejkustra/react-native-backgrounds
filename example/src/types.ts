@@ -12,6 +12,7 @@ export type RootStackParamList = {
   IridescenceStatic: undefined;
   LiquidChromeStatic: undefined;
   SilkStatic: undefined;
+  CampfireStatic: undefined;
 };
 
 export type HomeScreenNavigationProp =

@@ -36,6 +36,14 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     image: require('../../assets/components/silk.png'),
   },
   {
+    id: 'campfire',
+    title: 'Campfire',
+    description: 'Fire with drifting sparks and smoke',
+    screen: 'CampfireStatic',
+    color: '#ff9933',
+    image: require('../../assets/components/campfire.png'),
+  },
+  {
     id: 'circular-gradient',
     title: 'Circular Gradient',
     description: 'Customizable circular gradients',
