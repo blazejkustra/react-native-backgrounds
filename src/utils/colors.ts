@@ -5,25 +5,26 @@ import { NAMED_COLORS } from '../consts';
 export type ColorInput = number | string;
 
 /**
- * RGB color values normalized to 0-1 range
+ * RGBA color values normalized to 0-1 range
  */
-export type RGB = {
+export type RGBA = {
   r: number;
   g: number;
   b: number;
+  a: number;
 };
 
 /**
- * Converts various color formats to RGB object
+ * Converts various color formats to RGBA object
  * @param color - Can be:
  *   - Hex number (0xff0000)
  *   - Hex string ("#ff0000" or "ff0000")
  *   - RGB string ("rgb(255, 0, 0)")
- *   - RGBA string ("rgba(255, 0, 0, 1)") - alpha value is parsed but not used
+ *   - RGBA string ("rgba(255, 0, 0, 0.5)")
  *   - Named color ("red", "blue", "purple", etc.)
- * @returns RGB object with normalized values (0-1)
+ * @returns RGBA object with normalized values (0-1), alpha defaults to 1.0 for non-rgba formats
  */
-export function colorToVec3(color: ColorInput): RGB {
+export function colorToVec4(color: ColorInput): RGBA {
   'worklet';
   // Handle hex number
   if (typeof color === 'number') {
@@ -31,6 +32,7 @@ export function colorToVec3(color: ColorInput): RGB {
       r: ((color >> 16) & 0xff) / 255,
       g: ((color >> 8) & 0xff) / 255,
       b: (color & 0xff) / 255,
+      a: 1.0,
     };
   }
 
@@ -51,6 +53,7 @@ export function colorToVec3(color: ColorInput): RGB {
         r: Math.max(0, Math.min(255, parseInt(rgbaMatch[1]!, 10))) / 255,
         g: Math.max(0, Math.min(255, parseInt(rgbaMatch[2]!, 10))) / 255,
         b: Math.max(0, Math.min(255, parseInt(rgbaMatch[3]!, 10))) / 255,
+        a: Math.max(0, Math.min(1, parseFloat(rgbaMatch[4]!))),
       };
     }
 
@@ -68,6 +71,7 @@ export function colorToVec3(color: ColorInput): RGB {
         r: Math.max(0, Math.min(255, parseInt(rgbMatch[1]!, 10))) / 255,
         g: Math.max(0, Math.min(255, parseInt(rgbMatch[2]!, 10))) / 255,
         b: Math.max(0, Math.min(255, parseInt(rgbMatch[3]!, 10))) / 255,
+        a: 1.0,
       };
     }
 
@@ -81,6 +85,7 @@ export function colorToVec3(color: ColorInput): RGB {
           r: ((hexValue >> 16) & 0xff) / 255,
           g: ((hexValue >> 8) & 0xff) / 255,
           b: (hexValue & 0xff) / 255,
+          a: 1.0,
         };
       }
     }
@@ -104,6 +109,7 @@ export function colorToVec3(color: ColorInput): RGB {
       r: ((num >> 16) & 0xff) / 255,
       g: ((num >> 8) & 0xff) / 255,
       b: (num & 0xff) / 255,
+      a: 1.0,
     };
   }
 
