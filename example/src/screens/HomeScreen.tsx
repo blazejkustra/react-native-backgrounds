@@ -18,14 +18,13 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     screen: 'CircularGradientList',
     color: '#4f46e5',
   },
-  // Future examples can be added here
-  // {
-  //   id: 'linear-gradient',
-  //   title: 'Linear Gradient',
-  //   description: 'Smooth linear gradients with various directions',
-  //   screen: 'LinearGradientList',
-  //   color: '#ec4899',
-  // },
+  {
+    id: 'linear-gradient',
+    title: 'Linear Gradient',
+    description: 'Smooth linear gradients with various directions',
+    screen: 'LinearGradientList',
+    color: '#ec4899',
+  },
 ];
 
 export default function HomeScreen() {

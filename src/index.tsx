@@ -4,5 +4,6 @@ import { initGPU } from './utils/initGPU';
 initGPU();
 
 import CircularGradient from './components/CircularGradient';
+import LinearGradient from './components/LinearGradient';
 
-export { CircularGradient };
+export { CircularGradient, LinearGradient };
