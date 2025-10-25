@@ -33,28 +33,28 @@ const { height } = Dimensions.get('window');
 const COLOR_SCHEMES: ColorScheme[] = [
   {
     id: 'purple-black',
-    title: 'Animated Purple',
+    title: 'Purple',
     description: 'Purple gradient with animations',
     centerColor: '#4f46e5',
     edgeColor: '#000000',
   },
   {
     id: 'pink-dark',
-    title: 'Pink Dream',
+    title: 'Pink',
     description: 'Vibrant pink gradient fading to dark',
     centerColor: '#ec4899',
     edgeColor: '#1a1a1a',
   },
   {
     id: 'cyan-navy',
-    title: 'Ocean Depths',
+    title: 'Ocean',
     description: 'Cyan to navy blue gradient',
     centerColor: '#06b6d4',
     edgeColor: '#1e3a8a',
   },
   {
     id: 'green-emerald',
-    title: 'Emerald Forest',
+    title: 'Forest',
     description: 'Fresh green gradient',
     centerColor: '#10b981',
     edgeColor: '#064e3b',
