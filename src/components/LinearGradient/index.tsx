@@ -149,13 +149,7 @@ export default function LinearGradient({
 
     device.queue.submit([commandEncoder.finish()]);
     context.present();
-  }, [
-    sharedContext,
-    animatedStartColor,
-    animatedEndColor,
-    canvasRef,
-    angleInRadians,
-  ]);
+  }, [sharedContext, animatedStartColor, animatedEndColor, angleInRadians]);
 
   useEffect(() => {
     // TODO: Remove this trick
