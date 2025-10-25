@@ -25,6 +25,14 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     screen: 'LinearGradientList',
     color: '#ec4899',
   },
+  {
+    id: 'iridescence',
+    title: 'Iridescence',
+    description:
+      'Mesmerizing iridescent animated backgrounds with flowing colors',
+    screen: 'IridescenceStatic',
+    color: '#8b5cf6',
+  },
 ];
 
 export default function HomeScreen() {
