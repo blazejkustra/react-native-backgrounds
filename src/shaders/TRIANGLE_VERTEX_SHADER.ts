@@ -1,4 +1,4 @@
-export const fullScreenTriangleVertexShader = /* wgsl */ `
+export const TRIANGLE_VERTEX_SHADER = /* wgsl */ `
   struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) ndc: vec2<f32> };
   @vertex fn main(@builtin(vertex_index) vid: u32) -> VSOut {
     var p = array<vec2<f32>,3>(

@@ -7,27 +7,33 @@ import {
   StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import type { ExampleCategory, HomeScreenNavigationProp } from '../types';
+import type { GradientExample } from './types';
+import type { HomeScreenNavigationProp } from '../../types';
 
-const EXAMPLE_CATEGORIES: ExampleCategory[] = [
+const LINEAR_GRADIENT_EXAMPLES: GradientExample[] = [
   {
-    id: 'circular-gradient',
-    title: 'Circular Gradient',
-    description:
-      'Beautiful circular gradients with customizable colors and animations',
-    screen: 'CircularGradientList',
-    color: '#4f46e5',
+    id: 'static',
+    title: 'Static Gradient',
+    description: 'Beautiful static linear gradients with various directions',
+    screen: 'LinearGradientStatic',
+    preview: {
+      startColor: '#ec4899',
+      endColor: '#8b5cf6',
+    },
   },
   {
-    id: 'linear-gradient',
-    title: 'Linear Gradient',
-    description: 'Smooth linear gradients with various directions',
-    screen: 'LinearGradientList',
-    color: '#ec4899',
+    id: 'animated',
+    title: 'Animated Gradient',
+    description: 'Dynamic gradient with smooth color transitions and rotations',
+    screen: 'LinearGradientAnimated',
+    preview: {
+      startColor: '#06b6d4',
+      endColor: '#3b82f6',
+    },
   },
 ];
 
-export default function HomeScreen() {
+export default function LinearGradientListScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
   return (
@@ -35,8 +41,14 @@ export default function HomeScreen() {
       <StatusBar barStyle="light-content" backgroundColor="#000" />
 
       <View style={styles.header}>
-        <Text style={styles.title}>React Native Backgrounds</Text>
-        <Text style={styles.subtitle}>WebGPU-powered gradient examples</Text>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>Linear Gradients</Text>
+        <Text style={styles.subtitle}>Choose an example to explore</Text>
       </View>
 
       <ScrollView
@@ -44,22 +56,30 @@ export default function HomeScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {EXAMPLE_CATEGORIES.map((category) => (
+        {LINEAR_GRADIENT_EXAMPLES.map((example) => (
           <TouchableOpacity
-            key={category.id}
+            key={example.id}
             style={styles.card}
-            onPress={() => navigation.navigate(category.screen)}
+            onPress={() => navigation.navigate(example.screen)}
             activeOpacity={0.7}
           >
-            <View
-              style={[
-                styles.cardColorIndicator,
-                { backgroundColor: category.color },
-              ]}
-            />
+            <View style={[styles.previewBox]}>
+              <View
+                style={[
+                  styles.previewGradient,
+                  { backgroundColor: example.preview.startColor },
+                ]}
+              />
+              <View
+                style={[
+                  styles.previewGradient,
+                  { backgroundColor: example.preview.endColor },
+                ]}
+              />
+            </View>
             <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>{category.title}</Text>
-              <Text style={styles.cardDescription}>{category.description}</Text>
+              <Text style={styles.cardTitle}>{example.title}</Text>
+              <Text style={styles.cardDescription}>{example.description}</Text>
             </View>
             <View style={styles.cardArrow}>
               <Text style={styles.arrowText}>→</Text>
@@ -67,12 +87,6 @@ export default function HomeScreen() {
           </TouchableOpacity>
         ))}
       </ScrollView>
-
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          Tap any example to see it in action
-        </Text>
-      </View>
     </View>
   );
 }
@@ -90,8 +104,23 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#222',
   },
+  backButton: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
   title: {
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: '800',
     color: '#fff',
     marginBottom: 10,
@@ -108,7 +137,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 20,
     paddingTop: 28,
-    paddingBottom: 120,
+    paddingBottom: 40,
   },
   card: {
     backgroundColor: '#111',
@@ -128,11 +157,19 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 6,
   },
-  cardColorIndicator: {
-    width: 5,
+  previewBox: {
+    width: 64,
     height: 64,
-    borderRadius: 2.5,
+    borderRadius: 12,
     marginRight: 18,
+    flexDirection: 'row',
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: '#333',
+  },
+  previewGradient: {
+    flex: 1,
+    height: '100%',
   },
   cardContent: {
     flex: 1,
@@ -162,22 +199,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#fff',
     fontWeight: '600',
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingVertical: 28,
-    paddingHorizontal: 24,
-    backgroundColor: '#111',
-    borderTopWidth: 1,
-    borderTopColor: '#222',
-  },
-  footerText: {
-    fontSize: 14,
-    color: '#777',
-    textAlign: 'center',
-    fontWeight: '500',
   },
 });
