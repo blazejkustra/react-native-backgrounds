@@ -15,6 +15,7 @@ import LiquidChromeStaticScreen from './screens/LiquidChrome/LiquidChromeStaticS
 import SilkStaticScreen from './screens/Silk/SilkStaticScreen';
 import CampfireStaticScreen from './screens/Campfire/CampfireStaticScreen';
 import CalicoSwirlStaticScreen from './screens/CalicoSwirl/CalicoSwirlStaticScreen';
+import DesertStaticScreen from './screens/Desert/DesertStaticScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -73,6 +74,7 @@ export default function App() {
           name="CalicoSwirlStatic"
           component={CalicoSwirlStaticScreen}
         />
+        <Stack.Screen name="DesertStatic" component={DesertStaticScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
