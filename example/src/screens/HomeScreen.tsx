@@ -28,6 +28,14 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     image: require('../../assets/components/liquid-chrome.png'),
   },
   {
+    id: 'silk',
+    title: 'Silk',
+    description: 'Smooth flowing silk fabric',
+    screen: 'SilkStatic',
+    color: '#7B7481',
+    image: require('../../assets/components/silk.png'),
+  },
+  {
     id: 'circular-gradient',
     title: 'Circular Gradient',
     description: 'Customizable circular gradients',
