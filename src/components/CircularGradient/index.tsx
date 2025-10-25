@@ -216,7 +216,7 @@ export default function CircularGradient({
     }
 
     runOnUI(listenToAnimatedValues)();
-    return () => runOnUI(stopListeningToAnimatedValues)();
+    return runOnUI(stopListeningToAnimatedValues);
   }, [
     animatedCenterColor,
     animatedCenterX,
