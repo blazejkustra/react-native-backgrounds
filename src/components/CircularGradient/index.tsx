@@ -1,20 +1,46 @@
 /* eslint-disable no-bitwise */
-import { StyleSheet } from 'react-native';
+import { StyleSheet, type ViewProps } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
-import { colorToVec3Literal, type ColorInput } from '../utils/colors';
-import { fullScreenTriangleVertexShader } from '../shaders/fullScreenTriangleVertexShader';
-import { useWGPUSetup } from '../hooks/useWGPUSetup';
-import { useCallback, useEffect } from 'react';
+import { colorToVec3, type ColorInput } from '../../utils/colors';
+import { fullScreenTriangleVertexShader } from '../../shaders/fullScreenTriangleVertexShader';
+import { useWGPUSetup } from '../../hooks/useWGPUSetup';
+import { useCallback, useEffect, useMemo } from 'react';
 import { runOnUI, useDerivedValue } from 'react-native-reanimated';
 import type { SharedValue } from 'react-native-reanimated';
+import { CIRCULAR_GRADIENT_SHADER } from './shader';
 
-type Props = {
+type CanvasProps = ViewProps & {
+  transparent?: boolean;
+};
+
+type Props = CanvasProps & {
+  /**
+   * The color of the center of the gradient.
+   */
   centerColor: ColorInput;
+  /**
+   * The color of the edge of the gradient.
+   */
   edgeColor: ColorInput;
+  /**
+   * The size of the gradient.
+   */
   size?: number | SharedValue<number>;
+  /**
+   * The size of the gradient on the x-axis.
+   */
   sizeX?: number | SharedValue<number>;
+  /**
+   * The size of the gradient on the y-axis.
+   */
   sizeY?: number | SharedValue<number>;
+  /**
+   * The center of the gradient on the x-axis.
+   */
   centerX?: number | SharedValue<number>;
+  /**
+   * The center of the gradient on the y-axis.
+   */
   centerY?: number | SharedValue<number>;
 };
 
@@ -25,75 +51,55 @@ export default function CircularGradient({
   sizeY = 0.5,
   centerX = 0.5,
   centerY = 0.5,
+  style,
+  ...canvasProps
 }: Props) {
   const { sharedContext, canvasRef } = useWGPUSetup();
 
   const animatedSizeX = useDerivedValue(() =>
-    typeof sizeX === 'number' ? sizeX : sizeX.value
+    typeof sizeX === 'number' ? sizeX : sizeX.get()
   );
   const animatedSizeY = useDerivedValue(() =>
-    typeof sizeY === 'number' ? sizeY : sizeY.value
+    typeof sizeY === 'number' ? sizeY : sizeY.get()
   );
   const animatedCenterX = useDerivedValue(() =>
-    typeof centerX === 'number' ? centerX : centerX.value
+    typeof centerX === 'number' ? centerX : centerX.get()
   );
   const animatedCenterY = useDerivedValue(() =>
-    typeof centerY === 'number' ? centerY : centerY.value
+    typeof centerY === 'number' ? centerY : centerY.get()
   );
 
-  const x = colorToVec3Literal(centerColor);
-  const y = colorToVec3Literal(edgeColor);
+  const centerColorRGB = useMemo(() => colorToVec3(centerColor), [centerColor]);
+  const edgeColorRGB = useMemo(() => colorToVec3(edgeColor), [edgeColor]);
 
   const drawCircularGradient = useCallback(() => {
     'worklet';
 
-    const { device, context, presentationFormat } = sharedContext.value;
+    const { device, context, presentationFormat } = sharedContext.get();
     if (!device || !context || !presentationFormat) {
       return;
     }
 
     const uniformBuffer = device.createBuffer({
-      size: 20, // 5 floats: centerX, centerY, sizeX, sizeY, padding
+      size: 48, // 12 floats: centerX, centerY, sizeX, sizeY, centerColorR, centerColorG, centerColorB, padding, edgeColorR, edgeColorG, edgeColorB, padding
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
     const uniformData = new Float32Array([
-      animatedCenterX.value,
-      animatedCenterY.value,
-      animatedSizeX.value,
-      animatedSizeY.value,
+      animatedCenterX.get(),
+      animatedCenterY.get(),
+      animatedSizeX.get(),
+      animatedSizeY.get(),
+      centerColorRGB.r,
+      centerColorRGB.g,
+      centerColorRGB.b,
+      0.0, // padding for alignment
+      edgeColorRGB.r,
+      edgeColorRGB.g,
+      edgeColorRGB.b,
       0.0, // padding for alignment
     ]);
     device.queue.writeBuffer(uniformBuffer, 0, uniformData);
-
-    const FRAGMENT = /* wgsl */ `
-      const CENTER_COLOR : vec3<f32> = ${x};
-      const EDGE_COLOR   : vec3<f32> = ${y};
-
-      struct GradientParams {
-        centerX: f32,
-        centerY: f32,
-        sizeX: f32,
-        sizeY: f32,
-        _padding: f32,
-      }
-
-      @group(0) @binding(0) var<uniform> gradientParams: GradientParams;
-
-      @fragment
-      fn main(@location(0) ndc: vec2<f32>) -> @location(0) vec4<f32> {
-        let uv = (ndc * 0.6) + vec2<f32>(0.5, 0.5);
-        let center = vec2<f32>(gradientParams.centerX, gradientParams.centerY);
-        
-        let diff = uv - center;
-        let normalizedDiff = vec2<f32>(diff.x / gradientParams.sizeX, diff.y / gradientParams.sizeY);
-        let dist = length(normalizedDiff);
-        
-        let t = smoothstep(0.0, 1.0, dist);
-        let color = mix(CENTER_COLOR, EDGE_COLOR, t);
-        return vec4<f32>(color, 1.0);
-      }
-    `;
 
     const pipeline = device.createRenderPipeline({
       layout: 'auto',
@@ -105,7 +111,7 @@ export default function CircularGradient({
       },
       fragment: {
         module: device.createShaderModule({
-          code: FRAGMENT,
+          code: CIRCULAR_GRADIENT_SHADER,
         }),
         entryPoint: 'main',
         targets: [
@@ -154,13 +160,17 @@ export default function CircularGradient({
     device.queue.submit([commandEncoder.finish()]);
     context.present();
   }, [
+    sharedContext,
     animatedCenterX,
     animatedCenterY,
     animatedSizeX,
     animatedSizeY,
-    sharedContext,
-    x,
-    y,
+    centerColorRGB.r,
+    centerColorRGB.g,
+    centerColorRGB.b,
+    edgeColorRGB.r,
+    edgeColorRGB.g,
+    edgeColorRGB.b,
   ]);
 
   useEffect(() => {
@@ -202,7 +212,9 @@ export default function CircularGradient({
     sharedContext,
   ]);
 
-  return <Canvas ref={canvasRef} style={styles.webgpu} />;
+  return (
+    <Canvas ref={canvasRef} style={[styles.webgpu, style]} {...canvasProps} />
+  );
 }
 
 const styles = StyleSheet.create({

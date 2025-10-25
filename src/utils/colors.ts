@@ -7,24 +7,23 @@ export type ColorInput = number | string;
 /**
  * RGB color values normalized to 0-1 range
  */
-type RGB = {
+export type RGB = {
   r: number;
   g: number;
   b: number;
 };
 
 /**
- * Converts various color formats to WGSL vec3<f32> literal
+ * Converts various color formats to RGB object
  * @param color - Can be:
  *   - Hex number (0xff0000)
  *   - Hex string ("#ff0000" or "ff0000")
  *   - RGB string ("rgb(255, 0, 0)")
  *   - Named color ("red", "blue", "purple", etc.)
- * @returns WGSL vec3<f32> literal string
+ * @returns RGB object with normalized values (0-1)
  */
-export function colorToVec3Literal(color: ColorInput): string {
-  const rgb = parseColor(color);
-  return `vec3<f32>(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+export function colorToVec3(color: ColorInput): RGB {
+  return parseColor(color);
 }
 
 /**
