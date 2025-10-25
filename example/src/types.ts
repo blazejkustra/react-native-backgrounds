@@ -10,6 +10,7 @@ export type RootStackParamList = {
   LinearGradientAnimated: undefined;
   LinearGradientStatic: undefined;
   IridescenceStatic: undefined;
+  LiquidChromeStatic: undefined;
 };
 
 export type HomeScreenNavigationProp =

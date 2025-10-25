@@ -37,6 +37,14 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     color: '#8b5cf6',
     image: require('../../assets/components/iridescence.png'),
   },
+  {
+    id: 'liquid-chrome',
+    title: 'Liquid Chrome',
+    description: 'Fluid metallic surfaces with smooth flowing animations',
+    screen: 'LiquidChromeStatic',
+    color: '#64748b',
+    image: require('../../assets/components/liquid-chrome.png'),
+  },
 ];
 
 export default function HomeScreen() {

@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import { StyleSheet, type ViewProps } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
 import { TRIANGLE_VERTEX_SHADER } from '../../shaders/TRIANGLE_VERTEX_SHADER';
@@ -6,7 +5,7 @@ import { useWGPUSetup } from '../../hooks/useWGPUSetup';
 import { useCallback, useEffect } from 'react';
 import { runOnUI, useDerivedValue } from 'react-native-reanimated';
 import type { SharedValue } from 'react-native-reanimated';
-import { IRIDESCENCE_SHADER } from './shader';
+import { LIQUID_CHROME_SHADER } from './shader';
 import { useClock } from '../../hooks/useClock';
 import { colorToVec4, type ColorInput } from '../../utils/colors';
 import doTheTrick from '../../utils/doTheTrick';
@@ -17,38 +16,68 @@ type CanvasProps = ViewProps & {
 
 type Props = CanvasProps & {
   /**
-   * The color multiplier for the iridescent effect.
+   * The base color for the liquid chrome effect.
    * Can be a hex number, hex string, rgb/rgba string, or named color.
-   * @default '#ffffff'
+   * @default '#1a1a1a'
    */
-  color?: ColorInput | SharedValue<ColorInput>;
+  baseColor?: ColorInput | SharedValue<ColorInput>;
   /**
    * The speed of the animation.
-   * @default 1.0
+   * @default 0.2
    */
-  speed?: number;
+  speed?: number | SharedValue<number>;
   /**
-   * The amplitude of the effect (currently unused in shader but kept for API compatibility).
-   * @default 0.1
+   * The amplitude of the wave effect.
+   * @default 0.3
    */
-  amplitude?: number;
+  amplitude?: number | SharedValue<number>;
+  /**
+   * The frequency of the effect on the X axis.
+   * @default 3
+   */
+  frequencyX?: number | SharedValue<number>;
+  /**
+   * The frequency of the effect on the Y axis.
+   * @default 3
+   */
+  frequencyY?: number | SharedValue<number>;
 };
 
-export default function Iridescence({
-  color = '#ffffff',
-  speed = 1.0,
-  amplitude = 0.1,
+export default function LiquidChrome({
+  baseColor = '#1a1a1a',
+  speed = 0.2,
+  amplitude = 0.3,
+  frequencyX = 3,
+  frequencyY = 3,
   style,
   ...canvasProps
 }: Props) {
   const { sharedContext, canvasRef } = useWGPUSetup();
   const clock = useClock();
 
-  const animatedColor = useDerivedValue(() =>
-    typeof color === 'number' || typeof color === 'string' ? color : color.get()
+  const animatedBaseColor = useDerivedValue(() =>
+    typeof baseColor === 'number' || typeof baseColor === 'string'
+      ? baseColor
+      : baseColor.get()
   );
 
-  const drawIridescence = useCallback(() => {
+  const animatedSpeed = useDerivedValue(() =>
+    typeof speed === 'number' ? speed : speed.get()
+  );
+
+  const animatedAmplitude = useDerivedValue(() =>
+    typeof amplitude === 'number' ? amplitude : amplitude.get()
+  );
+
+  const animatedFrequencyX = useDerivedValue(() =>
+    typeof frequencyX === 'number' ? frequencyX : frequencyX.get()
+  );
+
+  const animatedFrequencyY = useDerivedValue(() =>
+    typeof frequencyY === 'number' ? frequencyY : frequencyY.get()
+  );
+
+  const drawLiquidChrome = useCallback(() => {
     'worklet';
     const { device, context, presentationFormat } = sharedContext.get();
     if (!device || !context || !presentationFormat) {
@@ -66,29 +95,29 @@ export default function Iridescence({
     const height = context.canvas.height ?? 1;
     const aspect = width / height;
 
-    const time = clock.get() / 1000;
-    const colorRGBA = colorToVec4(animatedColor.get());
+    const time = (clock.get() / 1000) * animatedSpeed.get();
+    const baseColorRGBA = colorToVec4(animatedBaseColor.get());
 
     const uniformData = new Float32Array([
       width,
       height,
       aspect,
-      0.0,
+      0,
 
       time,
-      0.0,
-      0.0,
-      0.0,
+      0,
+      0,
+      0,
 
-      colorRGBA.r,
-      colorRGBA.g,
-      colorRGBA.b,
-      colorRGBA.a,
+      baseColorRGBA.r,
+      baseColorRGBA.g,
+      baseColorRGBA.b,
+      baseColorRGBA.a,
 
-      amplitude,
-      speed,
-      0.0,
-      0.0,
+      animatedAmplitude.get(),
+      animatedFrequencyX.get(),
+      animatedFrequencyY.get(),
+      0,
     ]);
 
     device.queue.writeBuffer(uniformBuffer, 0, uniformData);
@@ -100,7 +129,7 @@ export default function Iridescence({
         entryPoint: 'main',
       },
       fragment: {
-        module: device.createShaderModule({ code: IRIDESCENCE_SHADER }), // UV test
+        module: device.createShaderModule({ code: LIQUID_CHROME_SHADER }),
         entryPoint: 'main',
         targets: [{ format: presentationFormat }],
       },
@@ -128,7 +157,7 @@ export default function Iridescence({
       colorAttachments: [
         {
           view: textureView,
-          clearValue: [0, 0, 0, 1],
+          clearValue: [1, 1, 1, 1],
           loadOp: 'clear',
           storeOp: 'store',
         },
@@ -143,42 +172,68 @@ export default function Iridescence({
 
     device.queue.submit([commandEncoder.finish()]);
     context.present();
-  }, [amplitude, animatedColor, clock, sharedContext, speed]);
+  }, [
+    animatedAmplitude,
+    animatedBaseColor,
+    animatedFrequencyX,
+    animatedFrequencyY,
+    animatedSpeed,
+    clock,
+    sharedContext,
+  ]);
 
   useEffect(() => {
-    doTheTrick(drawIridescence);
+    doTheTrick(drawLiquidChrome);
 
     function listenToAnimatedValues() {
       clock.addListener(0, () => {
-        drawIridescence();
+        drawLiquidChrome();
       });
-      animatedColor.addListener(0, () => {
-        drawIridescence();
+      animatedBaseColor.addListener(0, () => {
+        drawLiquidChrome();
+      });
+      animatedSpeed.addListener(0, () => {
+        drawLiquidChrome();
+      });
+      animatedAmplitude.addListener(0, () => {
+        drawLiquidChrome();
+      });
+      animatedFrequencyX.addListener(0, () => {
+        drawLiquidChrome();
+      });
+      animatedFrequencyY.addListener(0, () => {
+        drawLiquidChrome();
       });
     }
 
     function stopListeningToAnimatedValues() {
       clock.removeListener(0);
-      animatedColor.removeListener(0);
+      animatedBaseColor.removeListener(0);
+      animatedSpeed.removeListener(0);
+      animatedAmplitude.removeListener(0);
+      animatedFrequencyX.removeListener(0);
+      animatedFrequencyY.removeListener(0);
     }
 
     runOnUI(listenToAnimatedValues)();
     return runOnUI(stopListeningToAnimatedValues);
-  }, [clock, animatedColor, drawIridescence, sharedContext]);
+  }, [
+    clock,
+    animatedBaseColor,
+    animatedSpeed,
+    animatedAmplitude,
+    animatedFrequencyX,
+    animatedFrequencyY,
+    drawLiquidChrome,
+    sharedContext,
+  ]);
 
   return (
-    <Canvas
-      ref={canvasRef}
-      {...canvasProps}
-      style={[styles.webgpu, style]}
-      pointerEvents="none"
-      accessible={false}
-      importantForAccessibility="no-hide-descendants"
-    />
+    <Canvas ref={canvasRef} {...canvasProps} style={[styles.webgpu, style]} />
   );
 }
 
-Iridescence.displayName = 'Iridescence';
+LiquidChrome.displayName = 'LiquidChrome';
 
 const styles = StyleSheet.create({
   webgpu: {

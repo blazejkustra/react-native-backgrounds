@@ -21,6 +21,8 @@ export default defineConfig([
     rules: {
       'react/react-in-jsx-scope': 'off',
       'prettier/prettier': 'error',
+      'curly': ['error', 'all'],
+      'no-bitwise': 'off',
     },
   },
   {
