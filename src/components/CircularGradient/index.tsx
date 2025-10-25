@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise */
 import { StyleSheet, type ViewProps } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
-import { colorToVec3 } from '../../utils/colors';
+import { colorToVec4 } from '../../utils/colors';
 import { fullScreenTriangleVertexShader } from '../../shaders/fullScreenTriangleVertexShader';
 import { useWGPUSetup } from '../../hooks/useWGPUSetup';
 import { useCallback, useEffect } from 'react';
@@ -21,7 +21,7 @@ type Props = CanvasProps & {
   /**
    * The color of the edge of the gradient.
    */
-  edgeColor: string | number | SharedValue<string> | SharedValue<number>;
+  edgeColor?: string | number | SharedValue<string> | SharedValue<number>;
   /**
    * The size of the gradient.
    */
@@ -46,7 +46,7 @@ type Props = CanvasProps & {
 
 export default function CircularGradient({
   centerColor,
-  edgeColor,
+  edgeColor = 'rgba(0,0,0,0)',
   sizeX = 0.5,
   sizeY = 0.5,
   centerX = 0.5,
@@ -88,26 +88,26 @@ export default function CircularGradient({
     }
 
     const uniformBuffer = device.createBuffer({
-      size: 48, // 12 floats: centerX, centerY, sizeX, sizeY, centerColorR, centerColorG, centerColorB, padding, edgeColorR, edgeColorG, edgeColorB, padding
+      size: 48,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
-    const edgeColorRGB = colorToVec3(animatedEdgeColor.get());
-    const centerColorRGB = colorToVec3(animatedCenterColor.get());
+    const edgeColorRGBA = colorToVec4(animatedEdgeColor.get());
+    const centerColorRGBA = colorToVec4(animatedCenterColor.get());
 
     const uniformData = new Float32Array([
       animatedCenterX.get(),
       animatedCenterY.get(),
       animatedSizeX.get(),
       animatedSizeY.get(),
-      centerColorRGB.r,
-      centerColorRGB.g,
-      centerColorRGB.b,
-      0.0, // padding for alignment
-      edgeColorRGB.r,
-      edgeColorRGB.g,
-      edgeColorRGB.b,
-      0.0, // padding for alignment
+      centerColorRGBA.r,
+      centerColorRGBA.g,
+      centerColorRGBA.b,
+      centerColorRGBA.a,
+      edgeColorRGBA.r,
+      edgeColorRGBA.g,
+      edgeColorRGBA.b,
+      edgeColorRGBA.a,
     ]);
     device.queue.writeBuffer(uniformBuffer, 0, uniformData);
 
