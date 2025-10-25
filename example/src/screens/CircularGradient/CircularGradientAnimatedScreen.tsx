@@ -6,19 +6,15 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Animated, {
+import {
   useSharedValue,
   withTiming,
-  useAnimatedStyle,
-  interpolate,
-  Extrapolation,
   useDerivedValue,
   interpolateColor,
 } from 'react-native-reanimated';
 import { CircularGradient } from 'react-native-backgrounds';
+import { BackButton } from '../../components/BackButton';
 
 type ColorScheme = {
   id: string;
@@ -27,8 +23,6 @@ type ColorScheme = {
   centerColor: string;
   edgeColor: string;
 };
-
-const { height } = Dimensions.get('window');
 
 const COLOR_SCHEMES: ColorScheme[] = [
   {
@@ -62,7 +56,6 @@ const COLOR_SCHEMES: ColorScheme[] = [
 ];
 
 export default function CircularGradientAnimatedScreen() {
-  const navigation = useNavigation();
   const [selectedScheme, setSelectedScheme] = useState<ColorScheme>(
     COLOR_SCHEMES[0]!
   );
@@ -94,47 +87,6 @@ export default function CircularGradientAnimatedScreen() {
     centerY.set(withTiming(targetY, { duration: 1000 }));
   };
 
-  const textAnimatedStyle = useAnimatedStyle(() => {
-    const translateY = interpolate(
-      centerY.value,
-      [1.1, -0.1],
-      [0, -height * 0.1],
-      Extrapolation.CLAMP
-    );
-
-    const scale = interpolate(
-      centerY.value,
-      [1.1, -0.1],
-      [0.7, 1],
-      Extrapolation.CLAMP
-    );
-
-    const opacity = interpolate(
-      centerY.value,
-      [1.1, -0.1],
-      [1.0, 0.8],
-      Extrapolation.CLAMP
-    );
-
-    return {
-      transform: [{ translateY }, { scale }],
-      opacity,
-    };
-  });
-
-  const buttonBottomAnimatedStyle = useAnimatedStyle(() => {
-    const translateY = interpolate(
-      centerY.value,
-      [1.1, -0.1],
-      [0, 20],
-      Extrapolation.CLAMP
-    );
-
-    return {
-      transform: [{ translateY }],
-    };
-  });
-
   return (
     <>
       <StatusBar
@@ -153,17 +105,12 @@ export default function CircularGradientAnimatedScreen() {
       />
 
       <View style={styles.content}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
+        <BackButton style={styles.backButton} />
 
-        <Animated.View style={[styles.titleContainer, textAnimatedStyle]}>
+        <View style={styles.titleContainer}>
           <Text style={styles.title}>{selectedScheme.title}</Text>
           <Text style={styles.subtitle}>{selectedScheme.description}</Text>
-        </Animated.View>
+        </View>
 
         <View style={styles.examplesContainer}>
           <ScrollView
@@ -206,9 +153,7 @@ export default function CircularGradientAnimatedScreen() {
           </ScrollView>
         </View>
 
-        <Animated.View
-          style={[styles.bottomButtonContainer, buttonBottomAnimatedStyle]}
-        >
+        <View style={[styles.bottomButtonContainer]}>
           <TouchableOpacity
             style={styles.bottomButton}
             onPress={handleAnimate}
@@ -216,7 +161,7 @@ export default function CircularGradientAnimatedScreen() {
           >
             <Text style={styles.bottomButtonText}>Down/Up</Text>
           </TouchableOpacity>
-        </Animated.View>
+        </View>
       </View>
     </>
   );
@@ -237,17 +182,6 @@ const styles = StyleSheet.create({
     top: 60,
     left: 24,
     zIndex: 100,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  backButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
   },
   titleContainer: {
     alignItems: 'center',

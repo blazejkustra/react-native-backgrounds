@@ -5,8 +5,8 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'react-native-backgrounds';
+import { BackButton } from '../../components/BackButton';
 import {
   useSharedValue,
   withRepeat,
@@ -31,7 +31,6 @@ const COLOR_SCHEMES: ColorScheme[] = [
 ];
 
 export default function LinearGradientAnimatedScreen() {
-  const navigation = useNavigation();
   const [currentSchemeIndex, setCurrentSchemeIndex] = useState(0);
   const [prevScheme, setPrevScheme] = useState<ColorScheme>(COLOR_SCHEMES[0]!);
 
@@ -94,12 +93,7 @@ export default function LinearGradientAnimatedScreen() {
       <StatusBar barStyle="light-content" backgroundColor="transparent" />
 
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
+        <BackButton />
       </View>
 
       <View style={styles.content}>
@@ -160,20 +154,6 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 28,
     paddingBottom: 20,
-  },
-  backButton: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '600',
   },
   content: {
     flex: 1,

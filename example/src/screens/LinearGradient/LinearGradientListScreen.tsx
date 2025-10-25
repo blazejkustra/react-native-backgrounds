@@ -7,6 +7,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Header } from '../../components/Header';
 import type { GradientExample } from './types';
 import type { HomeScreenNavigationProp } from '../../types';
 
@@ -40,16 +41,10 @@ export default function LinearGradientListScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000" />
 
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Linear Gradients</Text>
-        <Text style={styles.subtitle}>Choose an example to explore</Text>
-      </View>
+      <Header
+        title="Linear Gradients"
+        subtitle="Choose an example to explore"
+      />
 
       <ScrollView
         style={styles.scrollView}
@@ -95,29 +90,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 28,
-    paddingBottom: 28,
-    backgroundColor: '#111',
-    borderBottomWidth: 1,
-    borderBottomColor: '#222',
-  },
-  backButton: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.25)',
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '600',
   },
   title: {
     fontSize: 32,

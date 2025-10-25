@@ -1,6 +1,7 @@
 // App.tsx
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Platform } from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import CircularGradientListScreen from './screens/CircularGradient/CircularGradientListScreen';
 import CircularGradientAnimatedScreen from './screens/CircularGradient/CircularGradientAnimatedScreen';
@@ -20,8 +21,9 @@ export default function App() {
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
-          animation: 'slide_from_right',
+          animation: Platform.OS === 'web' ? 'none' : 'slide_from_right',
           contentStyle: { backgroundColor: '#000' },
+          presentation: 'card',
         }}
       >
         <Stack.Screen name="Home" component={HomeScreen} />

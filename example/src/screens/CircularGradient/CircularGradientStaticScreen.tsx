@@ -1,13 +1,6 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  StatusBar,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, ScrollView, StatusBar } from 'react-native';
 import { CircularGradient } from 'react-native-backgrounds';
+import { Header } from '../../components/Header';
 
 type GradientStyle = {
   id: string;
@@ -64,8 +57,6 @@ const GRADIENT_STYLES: GradientStyle[] = [
 ];
 
 export default function CircularGradientStaticScreen() {
-  const navigation = useNavigation();
-
   return (
     <View style={styles.container}>
       <StatusBar
@@ -74,16 +65,12 @@ export default function CircularGradientStaticScreen() {
         translucent
       />
 
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Static Gradients</Text>
-        <Text style={styles.headerSubtitle}>Different sizes and positions</Text>
-      </View>
+      <Header
+        title="Static Gradients"
+        subtitle="Different sizes and positions"
+        transparent
+        style={styles.header}
+      />
 
       <ScrollView
         style={styles.scrollView}
@@ -129,48 +116,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   header: {
-    paddingTop: 60,
     paddingHorizontal: 24,
     paddingBottom: 20,
-    backgroundColor: 'transparent',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 100,
-  },
-  backButton: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-    marginBottom: 16,
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#fff',
-    marginBottom: 4,
-    letterSpacing: -0.5,
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontWeight: '400',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
   },
   scrollView: {
     flex: 1,

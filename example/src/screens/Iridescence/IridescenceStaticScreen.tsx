@@ -2,13 +2,12 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   StatusBar,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Iridescence } from 'react-native-backgrounds';
+import { Header } from '../../components/Header';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width - 80;
@@ -66,22 +65,11 @@ const IRIDESCENCE_PRESETS: IridescenceConfig[] = [
 ];
 
 export default function IridescenceStaticScreen() {
-  const navigation = useNavigation();
-
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000" />
 
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Iridescence</Text>
-        <View style={styles.placeholder} />
-      </View>
+      <Header title="Iridescence" subtitle="Holographic effects" />
 
       <ScrollView
         style={styles.scrollView}
@@ -122,39 +110,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    backgroundColor: '#111',
-    borderBottomWidth: 1,
-    borderBottomColor: '#222',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#222',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: '#fff',
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#fff',
-    letterSpacing: -0.5,
-  },
-  placeholder: {
-    width: 40,
-  },
   scrollView: {
     flex: 1,
   },
@@ -163,6 +118,8 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   card: {
+    width: CARD_WIDTH,
+    alignSelf: 'center',
     backgroundColor: '#111',
     borderRadius: 20,
     padding: 16,
@@ -179,7 +136,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   gradientContainer: {
-    width: CARD_WIDTH - 32,
+    width: '100%',
     height: 220,
     borderRadius: 14,
     overflow: 'hidden',

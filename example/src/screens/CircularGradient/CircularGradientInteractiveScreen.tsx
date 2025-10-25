@@ -3,13 +3,12 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   StatusBar,
   PanResponder,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { CircularGradient } from 'react-native-backgrounds';
+import { BackButton } from '../../components/BackButton';
 
 type SliderControlProps = {
   label: string;
@@ -146,8 +145,6 @@ function ColorSlider({ label, r, g, b, onColorChange }: ColorSliderProps) {
 }
 
 export default function CircularGradientInteractiveScreen() {
-  const navigation = useNavigation();
-
   // Center color state (RGB)
   const [centerR, setCenterR] = useState(79);
   const [centerG, setCenterG] = useState(70);
@@ -186,12 +183,7 @@ export default function CircularGradientInteractiveScreen() {
           centerY={centerY}
         />
 
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
+        <BackButton style={styles.backButton} />
 
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Interactive Gradient</Text>
@@ -293,17 +285,6 @@ const styles = StyleSheet.create({
     top: 60,
     left: 24,
     zIndex: 100,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
   titleContainer: {
     position: 'absolute',

@@ -2,13 +2,12 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   StatusBar,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'react-native-backgrounds';
+import { Header } from '../../components/Header';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width - 80;
@@ -95,22 +94,14 @@ const GRADIENT_PRESETS: GradientConfig[] = [
 ];
 
 export default function LinearGradientStaticScreen() {
-  const navigation = useNavigation();
-
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#000" />
 
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.title}>Static Linear Gradients</Text>
-        <Text style={styles.subtitle}>Beautiful gradient presets</Text>
-      </View>
+      <Header
+        title="Static Linear Gradients"
+        subtitle="Beautiful gradient presets"
+      />
 
       <ScrollView
         style={styles.scrollView}
@@ -168,41 +159,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 28,
-    paddingBottom: 28,
-    backgroundColor: '#111',
-    borderBottomWidth: 1,
-    borderBottomColor: '#222',
-  },
-  backButton: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.25)',
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: '#fff',
-    marginBottom: 10,
-    letterSpacing: -0.5,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#999',
-    fontWeight: '400',
   },
   scrollView: {
     flex: 1,
