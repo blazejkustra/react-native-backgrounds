@@ -1,3 +1,8 @@
-export function multiply(a: number, b: number): number {
-  return a * b;
-}
+import { initGPU } from './utils/initGPU';
+
+// Need to initialize the GPU before using the library
+initGPU();
+
+import CircularGradient from './components/CircularGradient';
+
+export { CircularGradient };
