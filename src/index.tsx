@@ -4,6 +4,7 @@ import Iridescence from './components/Iridescence';
 import LiquidChrome from './components/LiquidChrome';
 import Silk from './components/Silk';
 import Campfire from './components/Campfire';
+import CalicoSwirl from './components/CalicoSwirl';
 
 export {
   CircularGradient,
@@ -12,4 +13,5 @@ export {
   LiquidChrome,
   Silk,
   Campfire,
+  CalicoSwirl,
 };
