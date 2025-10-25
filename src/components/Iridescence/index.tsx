@@ -53,7 +53,7 @@ export default function Iridescence({
     if (!device || !context || !presentationFormat) return;
 
     const uniformBuffer = device.createBuffer({
-      size: 64, // <-- Change size to 48 bytes (12 * 4)
+      size: 64,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
@@ -167,7 +167,14 @@ export default function Iridescence({
   }, [clock, animatedColor, drawIridescence, sharedContext]);
 
   return (
-    <Canvas ref={canvasRef} style={[styles.webgpu, style]} {...canvasProps} />
+    <Canvas
+      ref={canvasRef}
+      {...canvasProps}
+      style={[styles.webgpu, style]}
+      pointerEvents="none"
+      accessible={false}
+      importantForAccessibility="no-hide-descendants"
+    />
   );
 }
 
