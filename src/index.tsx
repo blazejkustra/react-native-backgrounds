@@ -3,5 +3,13 @@ import LinearGradient from './components/LinearGradient';
 import Iridescence from './components/Iridescence';
 import LiquidChrome from './components/LiquidChrome';
 import Silk from './components/Silk';
+import Campfire from './components/Campfire';
 
-export { CircularGradient, LinearGradient, Iridescence, LiquidChrome, Silk };
+export {
+  CircularGradient,
+  LinearGradient,
+  Iridescence,
+  LiquidChrome,
+  Silk,
+  Campfire,
+};
