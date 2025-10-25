@@ -1,10 +1,10 @@
 /* eslint-disable no-bitwise */
 import { StyleSheet, type ViewProps } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
-import { colorToVec3, type ColorInput } from '../../utils/colors';
+import { colorToVec3 } from '../../utils/colors';
 import { fullScreenTriangleVertexShader } from '../../shaders/fullScreenTriangleVertexShader';
 import { useWGPUSetup } from '../../hooks/useWGPUSetup';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { runOnUI, useDerivedValue } from 'react-native-reanimated';
 import type { SharedValue } from 'react-native-reanimated';
 import { CIRCULAR_GRADIENT_SHADER } from './shader';
@@ -17,11 +17,11 @@ type Props = CanvasProps & {
   /**
    * The color of the center of the gradient.
    */
-  centerColor: ColorInput;
+  centerColor: string | number | SharedValue<string> | SharedValue<number>;
   /**
    * The color of the edge of the gradient.
    */
-  edgeColor: ColorInput;
+  edgeColor: string | number | SharedValue<string> | SharedValue<number>;
   /**
    * The size of the gradient.
    */
@@ -68,9 +68,16 @@ export default function CircularGradient({
   const animatedCenterY = useDerivedValue(() =>
     typeof centerY === 'number' ? centerY : centerY.get()
   );
-
-  const centerColorRGB = useMemo(() => colorToVec3(centerColor), [centerColor]);
-  const edgeColorRGB = useMemo(() => colorToVec3(edgeColor), [edgeColor]);
+  const animatedEdgeColor = useDerivedValue(() =>
+    typeof edgeColor === 'number' || typeof edgeColor === 'string'
+      ? edgeColor
+      : edgeColor.get()
+  );
+  const animatedCenterColor = useDerivedValue(() =>
+    typeof centerColor === 'number' || typeof centerColor === 'string'
+      ? centerColor
+      : centerColor.get()
+  );
 
   const drawCircularGradient = useCallback(() => {
     'worklet';
@@ -84,6 +91,9 @@ export default function CircularGradient({
       size: 48, // 12 floats: centerX, centerY, sizeX, sizeY, centerColorR, centerColorG, centerColorB, padding, edgeColorR, edgeColorG, edgeColorB, padding
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
+
+    const edgeColorRGB = colorToVec3(animatedEdgeColor.get());
+    const centerColorRGB = colorToVec3(animatedCenterColor.get());
 
     const uniformData = new Float32Array([
       animatedCenterX.get(),
@@ -161,16 +171,12 @@ export default function CircularGradient({
     context.present();
   }, [
     sharedContext,
+    animatedEdgeColor,
+    animatedCenterColor,
     animatedCenterX,
     animatedCenterY,
     animatedSizeX,
     animatedSizeY,
-    centerColorRGB.r,
-    centerColorRGB.g,
-    centerColorRGB.b,
-    edgeColorRGB.r,
-    edgeColorRGB.g,
-    edgeColorRGB.b,
   ]);
 
   useEffect(() => {
@@ -192,6 +198,12 @@ export default function CircularGradient({
       animatedSizeY.addListener(0, () => {
         drawCircularGradient();
       });
+      animatedEdgeColor.addListener(0, () => {
+        drawCircularGradient();
+      });
+      animatedCenterColor.addListener(0, () => {
+        drawCircularGradient();
+      });
     }
 
     function stopListeningToAnimatedValues() {
@@ -199,13 +211,17 @@ export default function CircularGradient({
       animatedCenterY.removeListener(0);
       animatedSizeX.removeListener(0);
       animatedSizeY.removeListener(0);
+      animatedEdgeColor.removeListener(0);
+      animatedCenterColor.removeListener(0);
     }
 
     runOnUI(listenToAnimatedValues)();
     return () => runOnUI(stopListeningToAnimatedValues)();
   }, [
+    animatedCenterColor,
     animatedCenterX,
     animatedCenterY,
+    animatedEdgeColor,
     animatedSizeX,
     animatedSizeY,
     drawCircularGradient,

@@ -15,6 +15,8 @@ import Animated, {
   useAnimatedStyle,
   interpolate,
   Extrapolation,
+  useDerivedValue,
+  interpolateColor,
 } from 'react-native-reanimated';
 import { CircularGradient } from 'react-native-backgrounds';
 
@@ -65,6 +67,27 @@ export default function CircularGradientAnimatedScreen() {
     COLOR_SCHEMES[0]!
   );
   const centerY = useSharedValue(1.1);
+
+  // Color shared values for smooth transitions
+  const centerColorProgress = useSharedValue(0);
+  const edgeColorProgress = useSharedValue(0);
+  const [prevScheme, setPrevScheme] = useState<ColorScheme>(COLOR_SCHEMES[0]!);
+
+  const animatedCenterColor = useDerivedValue(() => {
+    return interpolateColor(
+      centerColorProgress.value,
+      [0, 1],
+      [prevScheme.centerColor, selectedScheme.centerColor]
+    );
+  });
+
+  const animatedEdgeColor = useDerivedValue(() => {
+    return interpolateColor(
+      edgeColorProgress.value,
+      [0, 1],
+      [prevScheme.edgeColor, selectedScheme.edgeColor]
+    );
+  });
 
   const handleAnimate = () => {
     const targetY = centerY.get() > 0.5 ? -0.2 : 1.1;
@@ -121,8 +144,8 @@ export default function CircularGradientAnimatedScreen() {
       />
 
       <CircularGradient
-        centerColor={selectedScheme.centerColor}
-        edgeColor={selectedScheme.edgeColor}
+        centerColor={animatedCenterColor}
+        edgeColor={animatedEdgeColor}
         sizeX={1}
         sizeY={0.5}
         centerX={0.5}
@@ -156,7 +179,18 @@ export default function CircularGradientAnimatedScreen() {
                   selectedScheme.id === scheme.id && styles.exampleCardActive,
                 ]}
                 onPress={() => {
-                  setSelectedScheme(scheme);
+                  if (selectedScheme.id !== scheme.id) {
+                    setPrevScheme(selectedScheme);
+                    setSelectedScheme(scheme);
+                    centerColorProgress.value = 0;
+                    edgeColorProgress.value = 0;
+                    centerColorProgress.value = withTiming(1, {
+                      duration: 600,
+                    });
+                    edgeColorProgress.value = withTiming(1, {
+                      duration: 600,
+                    });
+                  }
                 }}
                 activeOpacity={0.7}
               >
