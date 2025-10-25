@@ -11,6 +11,7 @@ import LinearGradientListScreen from './screens/LinearGradient/LinearGradientLis
 import LinearGradientAnimatedScreen from './screens/LinearGradient/LinearGradientAnimatedScreen';
 import LinearGradientStaticScreen from './screens/LinearGradient/LinearGradientStaticScreen';
 import IridescenceStaticScreen from './screens/Iridescence/IridescenceStaticScreen';
+import LiquidChromeStaticScreen from './screens/LiquidChrome/LiquidChromeStaticScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -58,6 +59,10 @@ export default function App() {
         <Stack.Screen
           name="IridescenceStatic"
           component={IridescenceStaticScreen}
+        />
+        <Stack.Screen
+          name="LiquidChromeStatic"
+          component={LiquidChromeStaticScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

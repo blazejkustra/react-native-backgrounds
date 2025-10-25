@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import { StyleSheet, type ViewProps } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
 import { colorToVec4 } from '../../utils/colors';

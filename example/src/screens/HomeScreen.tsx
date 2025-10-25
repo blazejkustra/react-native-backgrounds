@@ -12,6 +12,23 @@ import type { ExampleCategory, HomeScreenNavigationProp } from '../types';
 
 const EXAMPLE_CATEGORIES: ExampleCategory[] = [
   {
+    id: 'iridescence',
+    title: 'Iridescence',
+    description:
+      'Mesmerizing iridescent animated backgrounds with flowing colors',
+    screen: 'IridescenceStatic',
+    color: '#8b5cf6',
+    image: require('../../assets/components/iridescence.png'),
+  },
+  {
+    id: 'liquid-chrome',
+    title: 'Liquid Chrome',
+    description: 'Fluid metallic surfaces with smooth flowing animations',
+    screen: 'LiquidChromeStatic',
+    color: '#64748b',
+    image: require('../../assets/components/liquid-chrome.png'),
+  },
+  {
     id: 'circular-gradient',
     title: 'Circular Gradient',
     description:
@@ -27,15 +44,6 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     screen: 'LinearGradientList',
     color: '#ec4899',
     image: require('../../assets/components/linear-gradient.png'),
-  },
-  {
-    id: 'iridescence',
-    title: 'Iridescence',
-    description:
-      'Mesmerizing iridescent animated backgrounds with flowing colors',
-    screen: 'IridescenceStatic',
-    color: '#8b5cf6',
-    image: require('../../assets/components/iridescence.png'),
   },
 ];
 
