@@ -55,7 +55,7 @@ const IRIDESCENCE_PRESETS: IridescenceConfig[] = [
     id: 'fast',
     name: 'Fast Motion',
     color: '#ffffff',
-    speed: 10.0,
+    speed: 5.0,
   },
   {
     id: 'slow',
