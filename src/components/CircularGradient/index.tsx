@@ -2,7 +2,7 @@
 import { StyleSheet, type ViewProps } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
 import { colorToVec4 } from '../../utils/colors';
-import { fullScreenTriangleVertexShader } from '../../shaders/fullScreenTriangleVertexShader';
+import { TRIANGLE_VERTEX_SHADER } from '../../shaders/TRIANGLE_VERTEX_SHADER';
 import { useWGPUSetup } from '../../hooks/useWGPUSetup';
 import { useCallback, useEffect } from 'react';
 import { runOnUI, useDerivedValue } from 'react-native-reanimated';
@@ -115,7 +115,7 @@ export default function CircularGradient({
       layout: 'auto',
       vertex: {
         module: device.createShaderModule({
-          code: fullScreenTriangleVertexShader,
+          code: TRIANGLE_VERTEX_SHADER,
         }),
         entryPoint: 'main',
       },
