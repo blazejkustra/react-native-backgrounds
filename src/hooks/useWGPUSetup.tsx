@@ -1,32 +1,24 @@
-import { startTransition, useState } from 'react';
 import { PixelRatio } from 'react-native';
 import {
   type CanvasRef,
   type RNCanvasContext,
   useCanvasEffect,
 } from 'react-native-wgpu';
+import { useSharedValue, type SharedValue } from 'react-native-reanimated';
+
+type SharedContext = {
+  context?: RNCanvasContext;
+  presentationFormat?: GPUTextureFormat;
+  device?: GPUDevice;
+};
 
 type ReturnType = {
   canvasRef: React.RefObject<CanvasRef>;
-  presentationFormat: GPUTextureFormat;
-} & (
-  | {
-      context: RNCanvasContext;
-      device: GPUDevice;
-      isLoading: false;
-    }
-  | {
-      context: null;
-      device: null;
-      isLoading: true;
-    }
-);
+  sharedContext: SharedValue<SharedContext>;
+};
 
 export function useWGPUSetup(): ReturnType {
-  const [context, setContext] = useState<RNCanvasContext | null>(null);
-  const [device, setDevice] = useState<GPUDevice | null>(null);
-  const [presentationFormat, setPresentationFormat] =
-    useState<GPUTextureFormat>(navigator.gpu.getPreferredCanvasFormat());
+  const sharedContext = useSharedValue<SharedContext>({});
 
   const canvasRef = useCanvasEffect(async () => {
     const gpuAdapter = await navigator.gpu.requestAdapter();
@@ -34,37 +26,33 @@ export function useWGPUSetup(): ReturnType {
       throw new Error('[react-native-backgrounds] No adapter found');
     }
 
-    console.log('test');
-    const dev = await gpuAdapter.requestDevice();
+    const device = await gpuAdapter.requestDevice();
 
-    const ctx = canvasRef.current?.getContext('webgpu')!;
-    if (!ctx) {
-      return;
+    const context = canvasRef.current?.getContext('webgpu')!;
+    if (!context) {
+      throw new Error('[react-native-backgrounds] No context found');
     }
 
     const canvas = canvasRef.current?.getNativeSurface();
     canvas.width = canvas.clientWidth * PixelRatio.get();
     canvas.height = canvas.clientHeight * PixelRatio.get();
 
-    const format = navigator.gpu.getPreferredCanvasFormat();
-    ctx.configure({
-      device: dev,
-      format,
+    const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
+    context.configure({
+      device: device,
+      format: presentationFormat,
       alphaMode: 'premultiplied',
     });
 
-    startTransition(() => {
-      setContext(ctx);
-      setDevice(dev);
-      setPresentationFormat(format);
+    sharedContext.set({
+      context,
+      device,
+      presentationFormat,
     });
   });
 
   return {
     canvasRef,
-    context,
-    device,
-    presentationFormat,
-    isLoading: !context || !device,
-  } as ReturnType;
+    sharedContext,
+  };
 }
