@@ -31,7 +31,11 @@ export function initGPU() {
     globalThis.__UIModules = {};
   }
 
-  console.log('[react-native-backgrounds] Initializing GPU...');
+  if (process.env.NODE_ENV === 'development') {
+    console.log(
+      '[react-native-backgrounds] Initializing GPU on UI and background threads'
+    );
+  }
 
   runOnUI(init)();
   runOnBackground(init);
