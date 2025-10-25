@@ -1,3 +1,4 @@
+import '../utils/initGPUOnThreads';
 import { PixelRatio } from 'react-native';
 import {
   type CanvasRef,

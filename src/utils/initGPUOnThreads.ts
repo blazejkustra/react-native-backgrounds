@@ -1,8 +1,14 @@
 import { runOnUI } from 'react-native-reanimated';
-import { runOnBackground } from './backgroundRuntime';
+import { Platform } from 'react-native';
+
+let isInitialized = false;
 
 // This function is copied from react-native-webgpu-worklets
-export function initGPU() {
+function initGPUOnThreads() {
+  if (isInitialized) {
+    return;
+  }
+
   const { gpu } = globalThis.navigator;
   const {
     RNWebGPU,
@@ -38,5 +44,12 @@ export function initGPU() {
   }
 
   runOnUI(init)();
-  runOnBackground(init);
+  // TODO: Uncomment this when we start supporting background threads
+  // runOnBackground(init);
+  isInitialized = true;
+}
+
+// Only initialize the GPU on threads for non-web platforms
+if (Platform.OS !== 'web') {
+  initGPUOnThreads();
 }
