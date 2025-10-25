@@ -1,7 +1,7 @@
 {
   "name": "react-native-backgrounds",
   "version": "0.1.0",
-  "description": "High-performance animated gradients and backgrounds for React Native powered by WebGPU and Reanimated. Includes LinearGradient, CircularGradient, and Iridescence effects.",
+  "description": "WebGPU-powered backgrounds running on UI thread in React Native 🧑‍🍳",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {

@@ -11354,7 +11354,8 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: "*"
-    react-native-reanimated: "*"
+    react-native-reanimated: ">=3.0.0"
+    react-native-wgpu: ">=0.2.0"
   languageName: unknown
   linkType: soft
 
