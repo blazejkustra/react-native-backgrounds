@@ -11,6 +11,8 @@ import {
   useSharedValue,
   withRepeat,
   withTiming,
+  useDerivedValue,
+  interpolateColor,
 } from 'react-native-reanimated';
 import { useEffect, useState } from 'react';
 
@@ -31,31 +33,60 @@ const COLOR_SCHEMES: ColorScheme[] = [
 export default function LinearGradientAnimatedScreen() {
   const navigation = useNavigation();
   const [currentSchemeIndex, setCurrentSchemeIndex] = useState(0);
+  const [prevScheme, setPrevScheme] = useState<ColorScheme>(COLOR_SCHEMES[0]!);
 
   const angle = useSharedValue(0);
+  const startColorProgress = useSharedValue(1);
+  const endColorProgress = useSharedValue(1);
 
   useEffect(() => {
     // Rotate the gradient continuously
-    angle.value = withRepeat(withTiming(360, { duration: 10000 }), -1, false);
+    angle.value = withRepeat(withTiming(360, { duration: 3000 }), -1, false);
   }, [angle]);
 
   const currentScheme = COLOR_SCHEMES[currentSchemeIndex]!;
 
+  const animatedStartColor = useDerivedValue(() => {
+    return interpolateColor(
+      startColorProgress.value,
+      [0, 1],
+      [prevScheme.startColor, currentScheme.startColor]
+    );
+  });
+
+  const animatedEndColor = useDerivedValue(() => {
+    return interpolateColor(
+      endColorProgress.value,
+      [0, 1],
+      [prevScheme.endColor, currentScheme.endColor]
+    );
+  });
+
   const handleNextScheme = () => {
+    setPrevScheme(currentScheme);
     setCurrentSchemeIndex((prev) => (prev + 1) % COLOR_SCHEMES.length);
+    startColorProgress.value = 0;
+    endColorProgress.value = 0;
+    startColorProgress.value = withTiming(1, { duration: 600 });
+    endColorProgress.value = withTiming(1, { duration: 600 });
   };
 
   const handlePreviousScheme = () => {
+    setPrevScheme(currentScheme);
     setCurrentSchemeIndex(
       (prev) => (prev - 1 + COLOR_SCHEMES.length) % COLOR_SCHEMES.length
     );
+    startColorProgress.value = 0;
+    endColorProgress.value = 0;
+    startColorProgress.value = withTiming(1, { duration: 600 });
+    endColorProgress.value = withTiming(1, { duration: 600 });
   };
 
   return (
     <View style={styles.container}>
       <LinearGradient
-        startColor={currentScheme.startColor}
-        endColor={currentScheme.endColor}
+        startColor={animatedStartColor}
+        endColor={animatedEndColor}
         angle={angle}
         style={StyleSheet.absoluteFillObject}
       />

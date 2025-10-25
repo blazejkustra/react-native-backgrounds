@@ -63,14 +63,7 @@ export default function LinearGradientListScreen() {
             onPress={() => navigation.navigate(example.screen)}
             activeOpacity={0.7}
           >
-            <View
-              style={[
-                styles.previewBox,
-                {
-                  background: `linear-gradient(135deg, ${example.preview.startColor}, ${example.preview.endColor})`,
-                },
-              ]}
-            >
+            <View style={[styles.previewBox]}>
               <View
                 style={[
                   styles.previewGradient,
