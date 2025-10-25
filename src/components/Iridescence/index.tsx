@@ -9,6 +9,7 @@ import type { SharedValue } from 'react-native-reanimated';
 import { IRIDESCENCE_SHADER } from './shader';
 import { useClock } from '../../hooks/useClock';
 import { colorToVec4, type ColorInput } from '../../utils/colors';
+import doTheTrick from '../../utils/doTheTrick';
 
 type CanvasProps = ViewProps & {
   transparent?: boolean;
@@ -143,10 +144,7 @@ export default function Iridescence({
   }, [amplitude, animatedColor, clock, sharedContext, speed]);
 
   useEffect(() => {
-    // TODO: Remove this trick
-    setTimeout(() => {
-      runOnUI(drawIridescence)();
-    }, 0);
+    doTheTrick(drawIridescence);
 
     function listenToAnimatedValues() {
       clock.addListener(0, () => {
