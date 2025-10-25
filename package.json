@@ -1,7 +1,7 @@
 {
   "name": "react-native-backgrounds",
   "version": "0.1.0",
-  "description": "TODO",
+  "description": "High-performance animated gradients and backgrounds for React Native powered by WebGPU and Reanimated. Includes LinearGradient, CircularGradient, and Iridescence effects.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
@@ -43,7 +43,23 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "webgpu",
+    "gpu",
+    "gradient",
+    "linear-gradient",
+    "circular-gradient",
+    "radial-gradient",
+    "iridescence",
+    "background",
+    "animated",
+    "animation",
+    "reanimated",
+    "performance",
+    "shaders",
+    "graphics",
+    "ui",
+    "component"
   ],
   "repository": {
     "type": "git",
@@ -58,6 +74,17 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/blazejkustra"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "sideEffects": [
+    "src/utils/initGPUOnThreads.ts",
+    "lib/**/initGPUOnThreads.js"
+  ],
   "devDependencies": {
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/compat": "^1.3.2",
@@ -89,7 +116,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-reanimated": "*"
+    "react-native-reanimated": ">=3.0.0",
+    "react-native-wgpu": ">=0.2.0"
   },
   "workspaces": [
     "example"
