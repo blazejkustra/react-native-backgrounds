@@ -1,7 +1,5 @@
 import { NAMED_COLORS } from '../consts';
 
-/* eslint-disable no-bitwise */
-
 export type ColorInput = number | string;
 
 /**

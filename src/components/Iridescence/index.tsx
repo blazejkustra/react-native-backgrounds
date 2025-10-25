@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import { StyleSheet, type ViewProps } from 'react-native';
 import { Canvas } from 'react-native-wgpu';
 import { TRIANGLE_VERTEX_SHADER } from '../../shaders/TRIANGLE_VERTEX_SHADER';
