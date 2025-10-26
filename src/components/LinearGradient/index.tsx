@@ -71,9 +71,7 @@ export default function LinearGradient({
     const startColorRGBA = colorToVec4(animatedStartColor.get());
     const endColorRGBA = colorToVec4(animatedEndColor.get());
 
-    // @ts-expect-error - canvas is a HTMLCanvasElement
     const width = context.canvas.width ?? 1;
-    // @ts-expect-error - canvas is a HTMLCanvasElement
     const height = context.canvas.height ?? 1;
     const aspect = width / height;
 
