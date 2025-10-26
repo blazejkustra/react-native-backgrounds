@@ -83,6 +83,14 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     color: '#ff00ff',
     image: require('../../assets/components/holo.png'),
   },
+  {
+    id: 'glitter',
+    title: 'Glitter',
+    description: 'Animated sparkle effect with scrolling noise',
+    screen: 'GlitterStatic',
+    color: '#ffffff',
+    image: require('../../assets/components/glitter.png'),
+  },
 ];
 
 export default function HomeScreen() {
