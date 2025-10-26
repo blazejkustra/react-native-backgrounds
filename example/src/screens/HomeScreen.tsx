@@ -75,6 +75,14 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     color: '#ec4899',
     image: require('../../assets/components/linear-gradient.png'),
   },
+  {
+    id: 'holo',
+    title: 'Holographic Card',
+    description: 'Touch-interactive holographic effect with rainbow shimmer',
+    screen: 'HoloStatic',
+    color: '#ff00ff',
+    image: require('../../assets/components/holo.png'),
+  },
 ];
 
 export default function HomeScreen() {

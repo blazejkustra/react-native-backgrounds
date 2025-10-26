@@ -6,6 +6,7 @@ import Silk from './components/Silk';
 import Campfire from './components/Campfire';
 import CalicoSwirl from './components/CalicoSwirl';
 import Desert from './components/Desert';
+import Holo from './components/Holo';
 
 export {
   CircularGradient,
@@ -16,4 +17,5 @@ export {
   Campfire,
   CalicoSwirl,
   Desert,
+  Holo,
 };
