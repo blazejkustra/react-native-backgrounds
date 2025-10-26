@@ -87,9 +87,7 @@ export default function Campfire({
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
-    // @ts-expect-error - canvas is a HTMLCanvasElement
     const width = context.canvas.width ?? 1;
-    // @ts-expect-error - canvas is a HTMLCanvasElement
     const height = context.canvas.height ?? 1;
     const aspect = width / height;
 

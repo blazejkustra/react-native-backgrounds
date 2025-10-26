@@ -15,6 +15,7 @@ export type RootStackParamList = {
   CampfireStatic: undefined;
   CalicoSwirlStatic: undefined;
   DesertStatic: undefined;
+  HoloStatic: undefined;
 };
 
 export type HomeScreenNavigationProp =
