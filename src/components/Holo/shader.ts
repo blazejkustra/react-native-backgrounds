@@ -65,18 +65,16 @@ fn makeUVRotationMatrix(g: f32, h: f32) -> mat3x3<f32> {
 
 @fragment
 fn main(@location(0) ndc: vec2<f32>) -> @location(0) vec4<f32> {
-  // --- Match the input/UV handling from the simple shader ---
-  // NDC (-1..1) -> UV (0..1)
   let uv = ndc * 0.5 + 0.5;
 
   // Flip Y (textures are typically top-down)
   let flippedUV = vec2<f32>(uv.x, 1.0 - uv.y);
 
-  // Parallax offset (same as your first shader)
+  // Parallax offset
   let tiltOffset = uniforms.tilt.xy * PARALLAX_SCALE;
   let parallaxUV = flippedUV + tiltOffset;
 
-  // ---- Holographic space mapping (touch-based parallax) ----
+  // ---- Holographic space mapping ----
   let aspect = uniforms.screenProps.z;
   let touchTilt = uniforms.tilt.xy;
 
