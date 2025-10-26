@@ -18,6 +18,7 @@ import CalicoSwirlStaticScreen from './screens/CalicoSwirl/CalicoSwirlStaticScre
 import DesertStaticScreen from './screens/Desert/DesertStaticScreen';
 import HoloStaticScreen from './screens/Holo/HoloStaticScreen';
 import GlitterStaticScreen from './screens/Glitter/GlitterStaticScreen';
+import BlurStaticScreen from './screens/Blur/BlurStaticScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -79,6 +80,7 @@ export default function App() {
         <Stack.Screen name="DesertStatic" component={DesertStaticScreen} />
         <Stack.Screen name="HoloStatic" component={HoloStaticScreen} />
         <Stack.Screen name="GlitterStatic" component={GlitterStaticScreen} />
+        <Stack.Screen name="BlurStatic" component={BlurStaticScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

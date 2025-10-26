@@ -8,6 +8,7 @@ import CalicoSwirl from './components/CalicoSwirl';
 import Desert from './components/Desert';
 import Holo from './components/Holo';
 import Glitter from './components/Glitter';
+import Blur from './components/Blur';
 
 export {
   CircularGradient,
@@ -20,4 +21,5 @@ export {
   Desert,
   Holo,
   Glitter,
+  Blur,
 };
