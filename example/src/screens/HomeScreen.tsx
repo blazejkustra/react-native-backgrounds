@@ -91,6 +91,14 @@ const EXAMPLE_CATEGORIES: ExampleCategory[] = [
     color: '#ffffff',
     image: require('../../assets/components/glitter.png'),
   },
+  {
+    id: 'blur',
+    title: 'Blur',
+    description: 'GPU-accelerated compute shader blur',
+    screen: 'BlurStatic',
+    color: '#6b7280',
+    image: require('../../assets/components/blur.png'),
+  },
 ];
 
 export default function HomeScreen() {
